@@ -11,12 +11,19 @@ export const PasswordField = ({
     getPasswordValue,
     isValid,
     placeholder = "",
+    defaultValue = null,
     required = false,
     submitted = false,
     ...rest
 }) => {
     const [ password, setPassword ] = useState( '' )
     const [ errorMsg, setErrorMsg ] = useState( '' )
+
+    useEffect(() => {
+        if ( defaultValue ) {
+            setPassword( defaultValue )
+        }
+    }, [ defaultValue ])
 
     useEffect(() =>{
         getPasswordValue( password )
@@ -37,7 +44,7 @@ export const PasswordField = ({
             onChange={e => setPassword(e.target.value)}
             placeholder={placeholder} />
         {
-            required && !errorMsg || !submitted ? <Text fontSize={13} fontWeight="bold">*Required</Text> : null
+            required && (!errorMsg || !submitted) ? <Text fontSize={13} fontWeight="bold">*Required</Text> : null
         }
         {
             errorMsg && submitted ? <Text fontSize={13} color="red" fontWeight="bold"> {errorMsg} </Text> : null

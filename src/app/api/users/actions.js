@@ -28,6 +28,40 @@ export async function create_user( {
     })
 }
 
+
+export async function update_user_profile( {
+    user_id: user_id,
+    user_email: user_email,
+    user_name: user_name,
+
+} ) {
+    return await prisma.user.update({
+        data: {
+            user_email: user_email,
+            user_name: user_name,
+        },
+		where: {
+			user_id: user_id,
+		}
+    })
+}
+
+export async function update_user_password( {
+    user_id: user_id,
+    user_password: user_password,
+
+} ) {
+    return await prisma.user.update({
+        data: {
+            user_password: user_password,
+        },
+		where: {
+			user_id: user_id,
+		}
+    })
+}
+
+
 export async function get_user({
     user_email: user_email
 }) {

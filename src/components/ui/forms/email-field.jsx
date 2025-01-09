@@ -11,6 +11,7 @@ export const EmailField = ({
     getEmailValue,
     isValid,
     placeholder = "",
+    defaultValue = null,
     required = false,
     submitted = false,
     ...rest
@@ -19,6 +20,12 @@ export const EmailField = ({
 
     const [ errorMsg, setErrorMsg ] = useState( '' )
     const [ email, setEmail ] = useState( '' )
+
+    useEffect(() => {
+        if ( defaultValue ) {
+            setEmail( defaultValue )
+        }
+    }, [ defaultValue ])
 
     useEffect(() => {
         if ( required && isValid ) {

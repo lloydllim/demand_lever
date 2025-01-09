@@ -8,7 +8,7 @@ import { verifyToken } from '../lib/auth'
 
 const SECRET_KEY = process.env.JWT_TOKEN
 
-export async function login(email, password) {
+export async function login(email, password,encryptedPassword=null) {
 	if (!email || !password) {
 		return { success: false, message: 'Email and Password are required' }
 	}
@@ -25,7 +25,11 @@ export async function login(email, password) {
 			let isPasswordCorrect = null
 			let token = null
 
+			if(encryptedPassword == null){
 			isPasswordCorrect = await bcrypt.compare(password, record.user_password);
+			} else {
+			isPasswordCorrect = encryptedPassword === record.user_password;
+			}
 
 			if (!isPasswordCorrect) {
 				return { success: false, message: 'Invalid Credentials' }

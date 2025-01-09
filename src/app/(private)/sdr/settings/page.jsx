@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
 import { verifyToken } from "@/app/api/lib/auth"
 import SDRLayout from "@/app/layouts/SDRLayouts/layout";
+import SettingsDashboard from "@/components/pages/sdr/settings/SettingsDashboard";
 
 export default async function SettingsPage() {
     const cookieStore = await cookies()
@@ -23,7 +24,7 @@ export default async function SettingsPage() {
         } else {
             if (user_type && user_type == 'sdr') {
                 return <SDRLayout>
-                   {'Settings Page'}
+                   <SettingsDashboard />
                 </SDRLayout>
             } else {
                 return redirect(`/${user_type}`)
