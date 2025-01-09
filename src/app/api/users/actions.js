@@ -28,6 +28,13 @@ export async function create_user( {
     })
 }
 
+export async function get_users( { user_type: user_type }) {
+    return await prisma.user.findMany( {
+        where: {
+            user_type: user_type
+        }
+    })
+}
 
 export async function update_user_profile( {
     user_id: user_id,

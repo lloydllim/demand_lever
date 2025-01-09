@@ -9,7 +9,7 @@ export async function createMessage ({
     user2
 }) {
 
-    let conversationId = await getConversationId(user1,user2);
+    let conversationId = await getConversationId( user1, user2 );
     if (!conversationId) {
         const conversation = await prisma.conversation.create({
             data: {
