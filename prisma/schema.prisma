@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id                 String @id @default(uuid())
+  user_name               String
+  user_email              String @unique
+  user_login_type         String
+  user_password           String?
+  user_picture            String?
+  user_type               String?
+  user_access_token       String?
+  user_refresh_token      String?
+  user_token_expired_at   Int?
+
+  analytics               Analytics[]
+}
+
+model Scheduler {
+  scheduler_id                String  @id @default(uuid())
+  scheduler_user_id           String
+  scheduler_first_name        String?
+  scheduler_last_name         String?
+  scheduler_job_title         String?
+  scheduler_company           String?
+  scheduler_location          String?
+  scheduler_linkedin_url      String?
+  scheduler_linkedin_keyowrds String?
+  scheduler_bad_data          String?
+  scheduler_invite            String?
+  scheduler_accepted          String?
+  scheduler_message_1         String?
+  scheduler_message_2         String?
+  scheduler_message_3         String?
+  scheduler_reply             String?
+  scheduler_track             String?
+  scheduler_review_posted     String?
+  scheduler_invite_date       String?
+  scheduler_accepted_date     String?
+  scheduler_m1_date           String?
+  scheduler_m2_date           String?
+  scheduler_m3_date           String?
+  scheduler_reply_date        String?
+}
+
+model Analytics {
+  analytics_id                String @id @default(uuid())
+  analytics_user              String
+  analytics_date              String @unique
+  analytics_present           Boolean @default(true)
+  analytics_count             Int @default(0)
+  analytics_created_at        DateTime @default(now())
+
+  users                       User @relation(fields: [analytics_user], references: [user_id])
+
+}
+
+model Proposal {
+  proposal_id                  String       @id @default(uuid())
+  proposal_client_id           String
+  proposal_manager_id          String?
+  proposal_client_second_email String?
+  proposal_prospect_id         String
+  proposal_status              String       @default("pending")
+  proposal_prospect_paragraph  String
+  clients                      Clients       @relation(fields: [proposal_client_id], references: [client_id])
+  sales_manager                SalesManager? @relation(fields: [proposal_manager_id], references: [manager_id])
+  prospects                    Prospects     @relation(fields: [proposal_prospect_id], references: [prospect_id])
+}
+
+model SalesPost {
+  sales_post_id            String  @id @default(uuid())
+  sales_client_id          String  
+  clients                  Clients @relation(fields: [sales_client_id], references: [client_id])
+}
+
+model Prospects {
+  prospect_id                  String     @id @default(uuid())
+  prospect_status              String
+  prospect_last_name           String
+  prospect_full_name           String
+  prospect_job_title           String
+  prospect_industry            String?
+  prospect_headcount           Int
+  prospect_important_notes     String?
+  prospect_pitched_campaigns   String
+  prospect_company_name        String
+  prospect_phone_number        String
+  prospect_email_address       String
+  prospect_company_description String?
+  prospect_website             String
+  prospect_frequency           String
+  prospect_other_services      String
+  prospect_function            String?
+  prospect_timezone            String?
+  prospect_location            String?
+  prospect_linkedin_profile    String
+  prospect_processed           Boolean
+  prospect_created             DateTime   @default(now())
+  prospect_last_updated        DateTime
+  prospect_onboarding_week     Int?
+  prospect_first_name          String
+  prospect_date_submitted      DateTime
+  prospect_password_hash       String
+  meetings                     Meetings[]
+  proposals                    Proposal[]
+}
+
+model SalesManager {
+  manager_id            String     @id @default(uuid())
+  manager_name          String
+  manager_password_hash String
+  manager_email         String
+  proposals             Proposal[]
+}
+
+model Clients {
+  client_id                   String      @id @default(uuid())
+  client_email                String
+  client_phone_number         String
+  client_calendly             String
+  client_job_title            String?
+  client_headcount            String?
+  client_industry             String
+  client_main_pitch           String?
+  client_onboarding_date      DateTime?
+  client_cap                  Int?
+  client_onboarding           Boolean?
+  client_intro_email          Boolean?
+  client_last_updated         DateTime?
+  client_week_number          Int?
+  client_assigned_date        DateTime?
+  client_assigned_week        Int?
+  client_transcript           String?
+  client_linkedin_profile     String
+  client_value_proposition    String
+  client_service_offered      String?
+  client_important_notes      String?
+  manager_id                  String?
+  client_company_name         String
+  client_company_website      String
+  client_full_name            String
+  client_password_hash        String
+  client_preferences          String?
+  client_preferred_job_titles String?
+  client_personal_email       String
+  client_referral_for         Int?
+  meetings                    Meetings[]
+  proposals                   Proposal[]
+  sales_post                  SalesPost[]
+}
+
+model Meetings {
+  meetings_id               String    @id @default(uuid())
+  meetings_feedback         String?
+  meetings_egc              String?
+  meetings_billed           String?
+  meetings_value            Int
+  meetings_time             DateTime?
+  meetings_for              String?
+  meetings_client_id        String
+  meetings_prospect_id      String
+  meetings_notes            String
+  meetings_booked_week      Int?
+  meetings_billed_date      DateTime?
+  meetings_billed_week      Int?
+  meetings_campaign         Int?
+  meetings_team             String
+  meetings_modified_date    DateTime?
+  meetings_p499_incentive   String?
+  meetings_appointment_date DateTime
+  meetings_created_date     DateTime  @default(now())
+  meetings_on               String?
+  meetings_screenshot       String?
+  meetings_timezone         String
+  meetings_p4499_incentive  String
+  clients                   Clients   @relation(fields: [meetings_client_id], references: [client_id])
+  prospects                 Prospects @relation(fields: [meetings_prospect_id], references: [prospect_id])
+}
+
+model LinkedIn {
+  linkedin_id                 String     @id @default(uuid())
+  linkedin_user_id            String     @unique
+  linkedin_title              String
+  linkedin_employment_type    String
+  linkedin_company_name       String
+  linkedin_location           String
+  linkedin_start_date         String
+  linkedin_description        String
+  linkedin_profile_headline   String
+  linkedin_skills             String
+  linkedin_media_link         String
+  linkedin_media_title        String
+  linkedin_media_description  String
+}
+
+model Conversation {
+  conversation_id             String @id @default(uuid())
+  conversation_created_at     DateTime @default(now())
+  conversation_from           String
+  conversation_to             String
+
+  messages                    Messages[]
+}
+
+model Messages {
+  messages_id                 String @id @default(uuid())
+  messages_body               String
+  messages_conversation       String
+  messages_is_from            Boolean
+
+  conversations               Conversation @relation( fields: [messages_conversation], references: [conversation_id])
+}

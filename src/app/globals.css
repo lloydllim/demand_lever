@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: black;
+  background-color: white;
+}
+
+.css-1cfdxra {
+  color: white;
+}
+
+.css-1jbbae0 {
+  color: black;
+  background-color: white;
+}
+
+.css-y5du55 {
+  color: black;
+}
+
+.css-1xhkg6e {
+  color: white;
+}
+
+.css-y5du55:hover {
+  color: white;
+}
+.chakra-dialog__content {
+  background-color: white;
+}
+
+.chakra-card__body {
+  background-color: white;
+  color: black;
+}
+
+.css-qv41pz:hover {
+  color: white;
+}
+
+.css-17x6jnl:hover {
+  color: white;
+}

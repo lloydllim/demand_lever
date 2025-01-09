@@ -1,0 +1,18 @@
+-- AlterTable
+ALTER TABLE "Scheduler" ADD COLUMN     "sheculder_location" TEXT,
+ALTER COLUMN "scheduler_first_name" DROP NOT NULL,
+ALTER COLUMN "scheduler_last_name" DROP NOT NULL,
+ALTER COLUMN "scheduler_job_title" DROP NOT NULL,
+ALTER COLUMN "scheduler_company" DROP NOT NULL,
+ALTER COLUMN "scheduler_linkedin_url" DROP NOT NULL,
+ALTER COLUMN "scheduler_linkedin_keyowrds" DROP NOT NULL,
+ALTER COLUMN "scheduler_bad_data" DROP NOT NULL,
+ALTER COLUMN "scheduler_invite" DROP NOT NULL,
+ALTER COLUMN "scheduler_accepted" DROP NOT NULL,
+ALTER COLUMN "scheduler_message_1" DROP NOT NULL,
+ALTER COLUMN "scheduler_message_2" DROP NOT NULL,
+ALTER COLUMN "scheduler_message_3" DROP NOT NULL,
+ALTER COLUMN "scheduler_reply" DROP NOT NULL,
+ALTER COLUMN "scheduler_track" DROP NOT NULL,
+ALTER COLUMN "scheduler_review_posted" DROP NOT NULL,
+ALTER COLUMN "scheduler_invite_date" DROP NOT NULL;
