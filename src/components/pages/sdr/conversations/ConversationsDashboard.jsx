@@ -34,10 +34,6 @@ const ChatUI = () => {
   }]);
 
   const sendMessage = async() => {
-    // setMessages([ ...messages, {
-    //   messages_body: message,
-    //   message_is_from: 1
-    // }])
 
     await createMessage({message: message,user1: user.user_id,user2: "1"});
     await createMessage({message: `Reply for ${message}`,user1: "1",user2: user.user_id})
