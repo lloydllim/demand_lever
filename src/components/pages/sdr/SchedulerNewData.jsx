@@ -9,21 +9,42 @@ export default function SchedulerNewData() {
     const [uploading, setUploading] = useState(false)
     const [csvData, setCsvData] = useState(null);
 
-     const handleFileUpload = (event) => {
-            console.info('uploading >> ')
-            const file = event.target.files[0];
-            if (!file) {
-                alert('Please upload a valid CSV file!');
-                return;
-            }
-    
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const text = e.target.result;
-                setCsvData(parseCSV(text)); // Parse and set the data
-            };
-            reader.readAsText(file);
+    const handleFileUpload = (event) => {
+        console.info('uploading >> ')
+        const file = event.target.files[0];
+        if (!file) {
+            alert('Please upload a valid CSV file!');
+            return;
         }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const text = e.target.result;
+            setCsvData(parseCSV(text)); // Parse and set the data
+        };
+        reader.readAsText(file);
+    }
+
+    const parseCSV = (data) => {
+        console.info('import csv')
+
+        const lines = data.trim().split('\n');
+        const headers = lines[0].split(',');
+        const rows = lines.slice(1);
+
+        return rows.map((row) => {
+            // Split by comma, while keeping quotes in mind
+            const values = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+
+            // Remove double quotes from the elements that were inside quotes
+            const finalValues = values.map(item => item.replace(/^"(.*)"$/, '$1'));
+
+            return headers.reduce((acc, header, index) => {
+                acc[header] = finalValues[index] || ''; // Default to empty string if no value
+                return acc;
+            }, {});
+        });
+    }
 
     async function processInBatches(user_data, data, batchSize) {
         for (let i = 0; i < data.length; i += batchSize) {

@@ -30,26 +30,7 @@ export default function SchedulerDashboard() {
         setLoading( false )
     }
 
-    const parseCSV = (data) => {
-        console.info('import csv')
-
-        const lines = data.trim().split('\n');
-        const headers = lines[0].split(',');
-        const rows = lines.slice(1);
-
-        return rows.map((row) => {
-            // Split by comma, while keeping quotes in mind
-            const values = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-
-            // Remove double quotes from the elements that were inside quotes
-            const finalValues = values.map(item => item.replace(/^"(.*)"$/, '$1'));
-
-            return headers.reduce((acc, header, index) => {
-                acc[header] = finalValues[index] || ''; // Default to empty string if no value
-                return acc;
-            }, {});
-        });
-    }
+    
 
     // Usage: Process data in batches of 50 with a 2-second interval between batches
     // Process 50 records at a time
