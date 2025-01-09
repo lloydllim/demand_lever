@@ -2,6 +2,19 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Pull environment
+
+```
+npx dotenv-vault login
+npx dotenv-vault pull
+```
+
+Run the docker compose file:
+
+```
+docker compose up
+```
+
 First, run the development server:
 
 ```bash
