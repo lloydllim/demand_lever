@@ -203,17 +203,20 @@ model LinkedIn {
 model Conversation {
   conversation_id             String @id @default(uuid())
   conversation_created_at     DateTime @default(now())
-  conversation_from           String
-  conversation_to             String
+  conversation_user_1         String
+  conversation_user_2     String
 
   messages                    Messages[]
+  @@unique([conversation_user_1, conversation_user_2])
 }
 
 model Messages {
   messages_id                 String @id @default(uuid())
   messages_body               String
-  messages_conversation       String
-  messages_is_from            Boolean
-
-  conversations               Conversation @relation( fields: [messages_conversation], references: [conversation_id])
+  messages_conversation_id    String
+  messages_sender_id          String
+  messages_receiver_id        String
+  messages_created_at         DateTime @default(now())
+  
+  conversations               Conversation @relation( fields: [messages_conversation_id], references: [conversation_id])
 }

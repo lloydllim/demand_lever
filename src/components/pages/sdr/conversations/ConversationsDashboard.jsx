@@ -1,6 +1,6 @@
 'use client'
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Flex,
@@ -15,34 +15,51 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaCheckSquare as CheckIcon } from "react-icons/fa";
+import { getSessionUser } from "@/app/api/auth/actions";
+import { createMessage, getConversationMessages } from "@/app/api/conversations/action";
 
 const ChatUI = () => {
   const bg = "gray.800";
   const textColor = "gray.200";
 
   const [message, setMessage] = useState('')
-  const [messages, setMessages] = useState([
-    {
-      messages_body: "hello",
-      messages_is_from: 0
-    },
-    {
-      messages_body: "Hi",
-      messages_is_from: 1
-    },
-    {
-      messages_body: "How are you ?",
-      messages_is_from: 0
-    }
-  ])
+  const [user, setUser] = useState({});
+  const [messages, setMessages] = useState([{
+    messages_body: "",
+    messages_conversation_id: "",
+    messages_created_at: "",
+    messages_id: "",
+    messages_receiver_id: "",
+    messages_sender_id: ""
+  }]);
 
-  const sendMessage = () => {
-    setMessages([ ...messages, {
-      messages_body: message,
-      message_is_from: 1
-    }])
+  const sendMessage = async() => {
+    // setMessages([ ...messages, {
+    //   messages_body: message,
+    //   message_is_from: 1
+    // }])
+
+    await createMessage({message: message,user1: user.user_id,user2: "1"});
+    await createMessage({message: `Reply for ${message}`,user1: "1",user2: user.user_id})
+    
     setMessage( '' )
+    getMessages();
   }
+  const getMessages = async() => {
+   
+   const result = await getConversationMessages(user.user_id,"1");
+   setMessages(result);
+  }
+
+  const getUser = async () => {
+    const session_data = await getSessionUser()
+    setUser(session_data);
+  }
+  
+  useEffect(() => {
+  getUser();
+  getMessages();
+  },[])
 
   return (
     <Box h="100vh" w={'100%'} p={4}>
@@ -61,7 +78,7 @@ const ChatUI = () => {
 
         {
           messages.map( ( message, index ) => {
-            if (message.messages_is_from == 1) {
+            if (message.messages_receiver_id == user.user_id) {
               return <HStack align="start" spacing={3} key={index}>
                 <Box bg={bg} p={3} borderRadius="md" >
                   <Text fontSize="sm" color={textColor}>
