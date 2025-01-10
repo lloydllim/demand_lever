@@ -8,6 +8,9 @@ datasource db {
 }
 
 model User {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   user_id               String  @id @default(uuid())
   user_name             String
   user_email            String  @unique
