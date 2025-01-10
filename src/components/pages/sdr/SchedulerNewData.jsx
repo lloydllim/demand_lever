@@ -3,6 +3,7 @@ import { Flex, Box } from "@chakra-ui/react"
 import { create_scheduler } from "@/app/api/scheduler/actions"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { getSessionUser } from '@/app/api/auth/actions';
 
 export default function SchedulerNewData() {
     const [status, setStatus] = useState(null)
