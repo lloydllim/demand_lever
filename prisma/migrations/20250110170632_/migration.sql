@@ -1,0 +1,15 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "agreementAccepted" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "companyName" TEXT,
+ADD COLUMN     "companyWebsite" TEXT,
+ADD COLUMN     "expectationAccepted" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "linkedinUrl" TEXT,
+ADD COLUMN     "marketingCalendly" TEXT,
+ADD COLUMN     "marketingIndustry" TEXT,
+ADD COLUMN     "marketingPreferences" TEXT,
+ADD COLUMN     "marketingPreferredJobTitles" TEXT,
+ADD COLUMN     "marketingValueProposition" TEXT,
+ADD COLUMN     "marktingCompanySize" TEXT,
+ADD COLUMN     "phoneNumber" TEXT,
+ADD COLUMN     "referralFor" TEXT,
+ADD COLUMN     "termsAndPrivacyAccepted" BOOLEAN NOT NULL DEFAULT false;

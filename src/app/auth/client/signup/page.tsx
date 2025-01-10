@@ -12,22 +12,26 @@ const AuthClientSignupPage: React.FC<IAuthClientSignupPageProps> = () => {
           alignItems="center"
           justifyContent="center"
           height="100%"
+          className="max-w-[800px] w-full mx-auto"
         >
           <Card.Root
-            width="320px"
             variant={"elevated"}
+            className="w-full"
           >
-            <Card.Body gap="4">
+            <Card.Header>
               <Card.Title>Create an account</Card.Title>
-              <Card.Description>Sign up to get started.</Card.Description>
+            </Card.Header>
+            <Card.Body className="space-y-4">
               <ClientSignupForm />
+            </Card.Body>
+            <Card.Footer>
               <Link
                 className="hover:underline"
                 href="/auth/client/signin"
               >
                 Already have an account?
               </Link>
-            </Card.Body>
+            </Card.Footer>
           </Card.Root>
         </Flex>
       </GridItem>
