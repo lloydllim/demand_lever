@@ -1,6 +1,6 @@
 "use client";
 
-import { authPostSignupAction } from "@/app/actions/auth-post-signup.action";
+import { authPostSignupAction } from "@/app/actions/auth/auth-post-signup.action";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { toaster } from "@/components/ui/toaster";
