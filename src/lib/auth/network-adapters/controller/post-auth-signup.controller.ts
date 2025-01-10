@@ -1,4 +1,4 @@
-import { IAuthWSignupUseCase } from "@/lib/auth/application/use-cases/auth-signup.use-case";
+import { IAuthSignupUseCase } from "@/lib/auth/application/use-cases/auth-signup.use-case";
 import { InputParseError } from "@/lib/common/entities/controller.error";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
 import { PostUserModel } from "@/lib/user/entities/user.model";
@@ -24,7 +24,7 @@ export type IPostAuthSignupController = ReturnType<
 export const PostAuthSignupController =
   (
     instrumentationService: IInstrumentationService,
-    authSignupUseCase: IAuthWSignupUseCase
+    authSignupUseCase: IAuthSignupUseCase
   ) =>
   (input: z.infer<typeof inputData>) => {
     return instrumentationService.startSpan(
@@ -38,7 +38,7 @@ export const PostAuthSignupController =
           });
         }
 
-        const token = await authSignupUseCase(input);
+        const token = await authSignupUseCase(data);
         return presenter(instrumentationService, token);
       }
     );
