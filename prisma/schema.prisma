@@ -8,18 +8,21 @@ datasource db {
 }
 
 model User {
-  user_id                 String @id @default(uuid())
-  user_name               String
-  user_email              String @unique
-  user_login_type         String
-  user_password           String?
-  user_picture            String?
-  user_type               String?
-  user_access_token       String?
-  user_refresh_token      String?
-  user_token_expired_at   Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  analytics               Analytics[]
+  user_id               String  @id @default(uuid())
+  user_name             String
+  user_email            String  @unique
+  user_login_type       String
+  user_password         String?
+  user_picture          String?
+  user_type             String?
+  user_access_token     String?
+  user_refresh_token    String?
+  user_token_expired_at Int?
+
+  analytics Analytics[]
 }
 
 model Scheduler {
@@ -50,24 +53,23 @@ model Scheduler {
 }
 
 model Analytics {
-  analytics_id                String @id @default(uuid())
-  analytics_user              String
-  analytics_date              String @unique
-  analytics_present           Boolean @default(true)
-  analytics_count             Int @default(0)
-  analytics_created_at        DateTime @default(now())
+  analytics_id         String   @id @default(uuid())
+  analytics_user       String
+  analytics_date       String   @unique
+  analytics_present    Boolean  @default(true)
+  analytics_count      Int      @default(0)
+  analytics_created_at DateTime @default(now())
 
-  users                       User @relation(fields: [analytics_user], references: [user_id])
-
+  users User @relation(fields: [analytics_user], references: [user_id])
 }
 
 model Proposal {
-  proposal_id                  String       @id @default(uuid())
+  proposal_id                  String        @id @default(uuid())
   proposal_client_id           String
   proposal_manager_id          String?
   proposal_client_second_email String?
   proposal_prospect_id         String
-  proposal_status              String       @default("pending")
+  proposal_status              String        @default("pending")
   proposal_prospect_paragraph  String
   clients                      Clients       @relation(fields: [proposal_client_id], references: [client_id])
   sales_manager                SalesManager? @relation(fields: [proposal_manager_id], references: [manager_id])
@@ -75,9 +77,9 @@ model Proposal {
 }
 
 model SalesPost {
-  sales_post_id            String  @id @default(uuid())
-  sales_client_id          String  
-  clients                  Clients @relation(fields: [sales_client_id], references: [client_id])
+  sales_post_id   String  @id @default(uuid())
+  sales_client_id String
+  clients         Clients @relation(fields: [sales_client_id], references: [client_id])
 }
 
 model Prospects {
@@ -185,38 +187,39 @@ model Meetings {
 }
 
 model LinkedIn {
-  linkedin_id                 String     @id @default(uuid())
-  linkedin_user_id            String     @unique
-  linkedin_title              String
-  linkedin_employment_type    String
-  linkedin_company_name       String
-  linkedin_location           String
-  linkedin_start_date         String
-  linkedin_description        String
-  linkedin_profile_headline   String
-  linkedin_skills             String
-  linkedin_media_link         String
-  linkedin_media_title        String
-  linkedin_media_description  String
+  linkedin_id                String @id @default(uuid())
+  linkedin_user_id           String @unique
+  linkedin_title             String
+  linkedin_employment_type   String
+  linkedin_company_name      String
+  linkedin_location          String
+  linkedin_start_date        String
+  linkedin_description       String
+  linkedin_profile_headline  String
+  linkedin_skills            String
+  linkedin_media_link        String
+  linkedin_media_title       String
+  linkedin_media_description String
 }
 
 model Conversation {
-  conversation_id             String @id @default(uuid())
-  conversation_created_at     DateTime @default(now())
-  conversation_user_1         String
+  conversation_id         String   @id @default(uuid())
+  conversation_created_at DateTime @default(now())
+  conversation_user_1     String
   conversation_user_2     String
 
-  messages                    Messages[]
+  messages Messages[]
+
   @@unique([conversation_user_1, conversation_user_2])
 }
 
 model Messages {
-  messages_id                 String @id @default(uuid())
-  messages_body               String
-  messages_conversation_id    String
-  messages_sender_id          String
-  messages_receiver_id        String
-  messages_created_at         DateTime @default(now())
-  
-  conversations               Conversation @relation( fields: [messages_conversation_id], references: [conversation_id])
+  messages_id              String   @id @default(uuid())
+  messages_body            String
+  messages_conversation_id String
+  messages_sender_id       String
+  messages_receiver_id     String
+  messages_created_at      DateTime @default(now())
+
+  conversations Conversation @relation(fields: [messages_conversation_id], references: [conversation_id])
 }

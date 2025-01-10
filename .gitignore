@@ -40,3 +40,8 @@ yarn-error.log*
 next-env.d.ts
 
 certificates
+.flaskenv*
+!.env.project
+!.env.vault
+# Sentry Config File
+.env.sentry-build-plugin
