@@ -1,6 +1,6 @@
 "use client";
 
-import { authVerifyTokenAction } from "@/app/actions/auth-verify-token.action";
+import { authVerifyTokenAction } from "@/app/actions/auth/auth-verify-token.action";
 import { usePathname, useRouter } from "next/navigation";
 import React, {
   createContext,
@@ -20,7 +20,7 @@ type IJwtPayload = {
 
 export type IAuthContextType = {
   children?: React.ReactNode;
-  user: any;
+  user: null;
 };
 
 const AuthContext = createContext<IAuthContextType>({
@@ -46,6 +46,7 @@ const AuthProvider: React.FC<IAuthContextType> = (props: IAuthContextType) => {
       const loginPathNameRegex = new RegExp(`^/login(/.*)?$`);
       const signupPathNameRegex = new RegExp(`^/signup(/.*)?$`);
       const authPathnameRegex = new RegExp(`^/auth(/.*)?$`);
+      const clientsPathNameRegex = new RegExp(`^/client(/.*)?$`);
 
       // If the user is not logged in and the path is not /login/*, redirect to /login
       if (
@@ -59,11 +60,15 @@ const AuthProvider: React.FC<IAuthContextType> = (props: IAuthContextType) => {
         // If the user is logged in and the path is /login/*, redirect to appropriate page
         const data = response as IJwtPayload;
 
-        if (data.user_type === "clients") {
+        if (
+          data.user_type === "clients" &&
+          !clientsPathNameRegex.test(pathName)
+        ) {
           routerPush("/clients");
         }
       }
     } catch (error) {
+      console.error(error);
       routerPush("/login");
     } finally {
       setLoading(false);
@@ -72,7 +77,7 @@ const AuthProvider: React.FC<IAuthContextType> = (props: IAuthContextType) => {
 
   useEffect(() => {
     authVerifyToken();
-  }, []);
+  }, [authVerifyToken]);
 
   return (
     <AuthContext.Provider

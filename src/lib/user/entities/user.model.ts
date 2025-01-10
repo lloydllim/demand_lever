@@ -31,3 +31,45 @@ export const ReadUserMode = UserModel.omit({
 });
 
 export type IReadUserModel = z.infer<typeof ReadUserMode>;
+
+export const UserClientModel = UserModel.extend({
+  hasCompletedOnboarding: z.boolean(),
+
+  // sign
+  agreementAccepted: z.boolean().nullable(),
+  expectationAccepted: z.boolean(),
+  termsAndPrivacyAccepted: z.boolean(),
+
+  // profile
+  phoneNumber: z.string(),
+  linkedinUrl: z.string().url(),
+  referralFor: z.enum(["279", "499"]),
+
+  // company
+  companyName: z.string(),
+  companyWebsite: z.string().url(),
+
+  // marketing
+  marketingValueProposition: z.string(),
+  marketingIndustry: z.string(),
+  marketingCompanySize: z.enum(["1-10", "11-20", "21-50", "51-100", "101+"]),
+  marketingPrefferedJobTitle: z.string(),
+  marketingCalendlyLink: z.string().url(),
+  marketingPreferences: z.string(),
+});
+
+export type IUserClientModel = z.infer<typeof UserClientModel>;
+
+export const UserClientPostModel = UserClientModel.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type IUserClientPostModel = z.infer<typeof UserClientPostModel>;
+
+export const ReadUserClientModel = UserClientModel.omit({
+  password: true,
+});
+
+export type IReadUserClientModel = z.infer<typeof ReadUserClientModel>;

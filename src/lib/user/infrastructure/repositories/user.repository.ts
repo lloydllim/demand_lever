@@ -3,6 +3,7 @@ import { IPrismaService } from "@/lib/prisma/application/services/prisma.service
 import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
 import {
   IPostUserModel,
+  IReadUserClientModel,
   IReadUserModel,
 } from "@/lib/user/entities/user.model";
 
@@ -85,6 +86,34 @@ export const UserRepository = class implements IUserRepository {
         }
 
         return user.user_password;
+      }
+    );
+  }
+
+  async findByIdAsClient(id: string): Promise<IReadUserClientModel | null> {
+    return await this.instrumentationService.startSpan(
+      { name: "UserRepository.findByIdAsClient" },
+      async () => {
+        const prismaClient = this.prismaService.getClient();
+        const user = await prismaClient.user.findUnique({
+          where: {
+            user_id: id,
+          },
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        return {
+          id: user.user_id,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          name: user.user_name,
+          email: user.user_email,
+          userType: user.user_type as IReadUserClientModel["userType"],
+          hasCompletedOnboarding: user.hasCompletedOnboarding,
+        } as IReadUserClientModel;
       }
     );
   }

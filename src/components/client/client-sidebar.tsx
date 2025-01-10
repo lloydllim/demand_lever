@@ -5,6 +5,7 @@ import {
   Collapsible,
   DrawerBody,
   DrawerContent,
+  DrawerHeader,
   DrawerRoot,
   Icon,
   Image,
@@ -203,29 +204,30 @@ const ClientSidebar: React.FC<IClientSidebarProps> = (
         }
       }}
     >
-      <Box className="p-4 absolute md:ml-[20rem] w-full space-y-2">
-        <Box className="flex flex-row items-centerr justify-between">
+      <div className="p-4 fixed md:ml-[20rem] h-full w-full md:w-[80vw] space-y-2 ">
+        <Button
+          className="hover:cursor-pointer md:hidden absolute top-4 right-4"
+          onClick={() => {
+            setDrawerOpen(!drawerOpen);
+          }}
+        >
+          <Icon>
+            <FaBars />
+          </Icon>
+        </Button>
+
+        {props.children}
+      </div>
+
+      <DrawerContent className="bg-white shadow-none border-r-[1px] min-h-[100vh]">
+        <DrawerHeader>
           <Image
             src="/images/pipelineaer_logo.png"
             alt="Example image"
             fit="contain"
             width={200}
           />
-          <Button
-            className="hover:cursor-pointer md:hidden"
-            onClick={() => {
-              setDrawerOpen(!drawerOpen);
-            }}
-          >
-            <Icon>
-              <FaBars />
-            </Icon>
-          </Button>
-        </Box>
-        {props.children}
-      </Box>
-
-      <DrawerContent className="bg-white shadow-none border-r-[1px] min-h-[100vh]">
+        </DrawerHeader>
         <DrawerBody>
           <CollapsibleList items={collapsibleItems} />
         </DrawerBody>
