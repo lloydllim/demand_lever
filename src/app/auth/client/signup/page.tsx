@@ -23,7 +23,7 @@ const AuthClientSignupPage: React.FC<IAuthClientSignupPageProps> = () => {
               <ClientSignupForm />
               <Link
                 className="hover:underline"
-                href="/auth/client/login"
+                href="/auth/client/signin"
               >
                 Already have an account?
               </Link>
