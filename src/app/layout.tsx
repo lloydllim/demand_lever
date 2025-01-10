@@ -1,4 +1,5 @@
 import { Provider } from "@/components/ui/provider";
+import { Toaster } from "@/components/ui/toaster";
 import AuthProvider from "@/hooks/auth/authProvider";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -33,7 +34,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider user={null}>
-          <Provider>{children}</Provider>
+          <Provider>
+            <Toaster />
+            {children}
+          </Provider>
         </AuthProvider>
       </body>
     </html>
