@@ -1,6 +1,8 @@
 import { IAuthService } from "@/lib/auth/application/services/auth.service.interface";
+import { IAuthSigninUseCase } from "@/lib/auth/application/use-cases/auth-signin.use-case";
 import { IAuthSignupUseCase } from "@/lib/auth/application/use-cases/auth-signup.use-case";
 import { IAuthVerifyTokenUseCase } from "@/lib/auth/application/use-cases/auth-verify-token.use-case";
+import { IPostAuthSigninController } from "@/lib/auth/network-adapters/controller/post-auth-signin.controller";
 import { IPostAuthSignupController } from "@/lib/auth/network-adapters/controller/post-auth-signup.controller";
 import { IPostAuthVerifyTokenController } from "@/lib/auth/network-adapters/controller/post-auth-verify-token.controller";
 import { ICrashReporterService } from "@/lib/crash-reporter/application/services/crash-reporter.service.interface";
@@ -24,6 +26,8 @@ export interface DI_RETURN_TYPES {
   IPostAuthVerifyTokenController: IPostAuthVerifyTokenController;
   IAuthSignupUseCase: IAuthSignupUseCase;
   IPostAuthSignupController: IPostAuthSignupController;
+  IAuthSigninUseCase: IAuthSigninUseCase;
+  IPostAuthSigninController: IPostAuthSigninController;
 
   // user
   IUserRepository: IUserRepository;
@@ -45,6 +49,8 @@ export const DI_SYMBOLS = {
   IPostAuthVerifyTokenController: Symbol.for("IPostAuthVerifyTokenController"),
   IAuthSignupUseCase: Symbol.for("IAuthSignupUseCase"),
   IPostAuthSignupController: Symbol.for("IPostAuthSignupController"),
+  IAuthSigninUseCase: Symbol.for("IAuthSigninUseCase"),
+  IPostAuthSigninController: Symbol.for("IPostAuthSigninController"),
 
   // user
   IUserRepository: Symbol.for("IUserRepository"),
