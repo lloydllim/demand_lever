@@ -188,6 +188,7 @@ const ClientSidebar: React.FC<IClientSidebarProps> = (
     } else {
       setDrawerOpen(true);
     }
+    console.log(isMobile);
   }, [isMobile]);
   return (
     <DrawerRoot
@@ -195,9 +196,9 @@ const ClientSidebar: React.FC<IClientSidebarProps> = (
       placement={"start"}
       trapFocus={false}
       preventScroll={false}
-      modal={false}
+      modal={isMobile}
       onPointerDownOutside={() => {
-        if (isMobile) {
+        if (isMobile && drawerOpen) {
           setDrawerOpen(false);
         }
       }}
@@ -212,7 +213,9 @@ const ClientSidebar: React.FC<IClientSidebarProps> = (
           />
           <Button
             className="hover:cursor-pointer md:hidden"
-            onClick={() => setDrawerOpen(!drawerOpen)}
+            onClick={() => {
+              setDrawerOpen(!drawerOpen);
+            }}
           >
             <Icon>
               <FaBars />
