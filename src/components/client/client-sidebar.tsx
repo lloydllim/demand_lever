@@ -204,7 +204,16 @@ const ClientSidebar: React.FC<IClientSidebarProps> = (
         }
       }}
     >
-      <div className="p-4 fixed md:ml-[20rem] h-full w-full md:w-[80vw] space-y-2 ">
+      <div
+        className="p-4 fixed md:ml-[20rem] h-full w-full md:w-[80vw] space-y-2 overflow-y-scroll"
+        style={{
+          // style the scroll to a thin line
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1)",
+          // padding
+          scrollMarginBottom: "1rem",
+        }}
+      >
         <Button
           className="hover:cursor-pointer md:hidden absolute top-4 right-4"
           onClick={() => {

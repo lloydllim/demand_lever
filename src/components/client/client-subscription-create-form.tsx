@@ -26,6 +26,17 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
+// Pricing constants
+const PRICES = {
+  SDR_MANAGER: 150,
+  SDR: 200,
+  DATA_PACKAGE: {
+    "299": 299,
+    "499": 499,
+  },
+};
+
+// Data package options with labels
 const dataPackage = createListCollection({
   items: [
     { label: "$299 Data Package", value: "299" },
@@ -45,6 +56,7 @@ const ClientSubscriptionCreateForm: React.FC<
   IClientSubscriptionCreateFormProps
 > = () => {
   const [amount, setAmount] = useState<number>(0.0);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -56,16 +68,11 @@ const ClientSubscriptionCreateForm: React.FC<
 
   const handleSubmit = async (input: z.infer<typeof formSchema>) => {
     try {
-      toaster.create({
-        title: "Not implemented",
-        description: "This feature is not implemented yet.",
-        type: "success",
-      });
       const stripe = await stripePromise;
       if (!stripe) {
         toaster.create({
-          title: "Something went wrong loading stripe",
-          description: "Please try again later.",
+          title: "Error",
+          description: "Stripe failed to load. Please try again later.",
           type: "error",
         });
         return;
@@ -86,14 +93,14 @@ const ClientSubscriptionCreateForm: React.FC<
 
       if (result.error) {
         toaster.create({
-          title: "Something went wrong",
-          description: "Please try again later.",
+          title: "Checkout Error",
+          description: result.error.message,
           type: "error",
         });
       }
-    } catch (error) {
+    } catch {
       toaster.create({
-        title: "Subscription creation failed",
+        title: "Submission Failed",
         description: "Please try again later.",
         type: "error",
       });
@@ -101,36 +108,36 @@ const ClientSubscriptionCreateForm: React.FC<
   };
 
   const {
-    formState: { errors },
-    formState: { isValid },
-    formState: { isSubmitting },
+    formState: { errors, isValid, isSubmitting },
     control,
     watch,
   } = form;
 
   const formValues = watch();
 
+  // Update total amount dynamically
   useEffect(() => {
-    // todo refactor hard coded prices
-    let total = 0;
-    total += formValues.sdrManagerQuantity * 150;
-    total += formValues.sdrQuantity * 200;
-    if (formValues.sdrDataPackage === "499") {
-      total += 499;
-    }
+    const total =
+      formValues.sdrManagerQuantity * PRICES.SDR_MANAGER +
+        formValues.sdrQuantity * PRICES.SDR +
+        PRICES.DATA_PACKAGE[formValues.sdrDataPackage] || 0;
     setAmount(total);
   }, [formValues]);
 
   return (
     <form
       onSubmit={form.handleSubmit(handleSubmit)}
-      className="space-y-4"
+      className="space-y-6"
     >
+      {/* SDR Manager Field with Pricing */}
       <Field
-        label="SDR Manager"
+        label={`SDR Manager`}
         invalid={!!errors.sdrManagerQuantity}
         errorText={errors.sdrManagerQuantity?.message}
       >
+        <p className="text-xs text-gray-500">
+          ${PRICES.SDR_MANAGER} per month
+        </p>
         <Controller
           name="sdrManagerQuantity"
           control={control}
@@ -139,9 +146,7 @@ const ClientSubscriptionCreateForm: React.FC<
               disabled={field.disabled}
               name={field.name}
               value={field.value.toString()}
-              onValueChange={({ value }) => {
-                field.onChange(Number(value));
-              }}
+              onValueChange={({ value }) => field.onChange(Number(value))}
               className="w-full"
               min={0}
               max={1}
@@ -152,11 +157,13 @@ const ClientSubscriptionCreateForm: React.FC<
         />
       </Field>
 
+      {/* SDR Field with Pricing */}
       <Field
-        label="SDR"
+        label={`SDR`}
         invalid={!!errors.sdrQuantity}
         errorText={errors.sdrQuantity?.message}
       >
+        <p className="text-xs text-gray-500">${PRICES.SDR} per month</p>
         <Controller
           name="sdrQuantity"
           control={control}
@@ -165,9 +172,7 @@ const ClientSubscriptionCreateForm: React.FC<
               disabled={field.disabled}
               name={field.name}
               value={field.value.toString()}
-              onValueChange={({ value }) => {
-                field.onChange(Number(value));
-              }}
+              onValueChange={({ value }) => field.onChange(Number(value))}
               className="w-full"
               min={1}
               max={100}
@@ -178,6 +183,7 @@ const ClientSubscriptionCreateForm: React.FC<
         />
       </Field>
 
+      {/* Data Package Field with Pricing */}
       <Field
         label="Data Package"
         invalid={!!errors.sdrDataPackage}
@@ -195,7 +201,7 @@ const ClientSubscriptionCreateForm: React.FC<
               collection={dataPackage}
             >
               <SelectTrigger>
-                <SelectValueText placeholder="Select Data Package" />
+                <SelectValueText placeholder="Select a Data Package" />
               </SelectTrigger>
               <SelectContent>
                 {dataPackage.items.map((dp) => (
@@ -212,14 +218,14 @@ const ClientSubscriptionCreateForm: React.FC<
         />
       </Field>
 
+      {/* Total Amount and Submit Button */}
       <div className="w-full flex justify-end pt-4">
         <Button
-          className=""
           type="submit"
           disabled={!isValid || isSubmitting}
           loading={isSubmitting}
         >
-          ${amount ? amount : amount.toFixed(2)} — Proceed to Checkout
+          ${amount.toFixed(2)} — Proceed to Checkout
         </Button>
       </div>
     </form>
