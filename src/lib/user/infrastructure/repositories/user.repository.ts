@@ -1,6 +1,6 @@
-import { IUserRepository } from "@/hooks/user/application/repositories/user.repository.interface";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
 import { IPrismaService } from "@/lib/prisma/application/services/prisma.service.interface";
+import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
 import {
   IPostUserModel,
   IReadUserModel,
@@ -16,15 +16,13 @@ export const UserRepository = class implements IUserRepository {
     return await this.instrumentationService.startSpan(
       { name: "UserRepository.create" },
       async () => {
-        const hashedPassword = await this.hashPassword(user.password);
-
         const prismaClient = this.prismaService.getClient();
         const createdUser = await prismaClient.user.create({
           data: {
             user_type: user.userType,
             user_email: user.email,
             user_name: user.name,
-            user_password: hashedPassword,
+            user_password: user.password,
             user_login_type: user.loginType,
           },
         });
