@@ -2,6 +2,7 @@ import { createAuthModule } from "@/di/modules/create-auth-module";
 import { createCrashReporterModule } from "@/di/modules/create-crash-reporter-module";
 import { createInstrumentationModule } from "@/di/modules/create-instrumentation-module";
 import { createPrismaModule } from "@/di/modules/create-prisma-module";
+import { createUserModule } from "@/di/modules/create-user-module";
 import { DI_RETURN_TYPES, DI_SYMBOLS } from "@/di/types";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
 import { createContainer } from "@evyweb/ioctopus";
@@ -28,6 +29,9 @@ ApplicationContainer.load(
 
 // prisma
 ApplicationContainer.load(Symbol("PrismaModule"), createPrismaModule());
+
+// user
+ApplicationContainer.load(Symbol("UserModule"), createUserModule());
 
 // auth
 ApplicationContainer.load(Symbol("AuthModule"), createAuthModule());
