@@ -54,7 +54,6 @@ const ClientSignupForm: React.FC<IClientSignupFormProps> = () => {
       });
       router.push("/clients");
     } catch (error) {
-      console.error(error);
       toaster.create({
         title: "Something went wrong",
         description: "The team has been notified. Please try again later.",
