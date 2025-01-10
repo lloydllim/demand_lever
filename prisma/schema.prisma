@@ -22,6 +22,26 @@ model User {
   user_refresh_token    String?
   user_token_expired_at Int?
 
+  // client
+  hasCompletedOnboarding  Boolean @default(false)
+  agreementAccepted       Boolean @default(false)
+  expectationAccepted     Boolean @default(false)
+  termsAndPrivacyAccepted Boolean @default(false)
+
+  referralFor String?
+  phoneNumber String?
+  linkedinUrl String?
+
+  companyName    String?
+  companyWebsite String?
+
+  marketingValueProposition   String?
+  marketingIndustry           String?
+  marktingCompanySize         String?
+  marketingPreferredJobTitles String?
+  marketingCalendly           String?
+  marketingPreferences        String?
+
   analytics Analytics[]
 }
 
