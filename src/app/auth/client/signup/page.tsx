@@ -1,5 +1,6 @@
 import ClientSignupForm from "@/components/client/client-signup-form";
 import { Card, Flex, Grid, GridItem } from "@chakra-ui/react";
+import Link from "next/link";
 
 export interface IAuthClientSignupPageProps {}
 
@@ -19,8 +20,13 @@ const AuthClientSignupPage: React.FC<IAuthClientSignupPageProps> = () => {
             <Card.Body gap="4">
               <Card.Title>Create an account</Card.Title>
               <Card.Description>Sign up to get started.</Card.Description>
-
               <ClientSignupForm />
+              <Link
+                className="hover:underline"
+                href="/auth/client/login"
+              >
+                Already have an account?
+              </Link>
             </Card.Body>
           </Card.Root>
         </Flex>
