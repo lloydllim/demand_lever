@@ -1,9 +1,7 @@
-import ClientSidebar from "@/components/client/client-sidebar";
-
 export type IClientServerPage = {};
 
 const ClientServerPage: React.FC<IClientServerPage> = () => {
-  return <ClientSidebar></ClientSidebar>;
+  return <div></div>;
 };
 
 ClientServerPage.displayName = "ClientServerPage";
