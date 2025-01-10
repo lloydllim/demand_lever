@@ -41,6 +41,7 @@ export const AuthService = class implements IAuthService {
     return this.instrumentationService.startSpan(
       { name: "AuthService.signup" },
       async () => {
+        user.password = await this.hashPassword(user.password);
         const createdUser = await this.userRepository.create(user);
 
         // todo fix dirty no enum check
