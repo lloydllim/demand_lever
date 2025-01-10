@@ -10,7 +10,7 @@ export const UserModel = z.object({
   password: z.string().min(6),
 
   loginType: z.enum(["manual"]),
-  userType: z.enum(["client"]).nullable(),
+  userType: z.enum(["clients"]).nullable(),
 });
 
 export type IUserModel = z.infer<typeof UserModel>;
@@ -21,14 +21,7 @@ export const PostUserModel = UserModel.pick({
   password: true,
   userType: true,
   loginType: true,
-})
-  .extend({
-    confirmPassword: z.string().min(6),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+});
 
 export type IPostUserModel = z.infer<typeof PostUserModel>;
 
