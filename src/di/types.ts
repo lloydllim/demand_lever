@@ -8,7 +8,12 @@ import { IPostAuthVerifyTokenController } from "@/lib/auth/network-adapters/cont
 import { ICrashReporterService } from "@/lib/crash-reporter/application/services/crash-reporter.service.interface";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
 import { IPrismaService } from "@/lib/prisma/application/services/prisma.service.interface";
+import { IStripeService } from "@/lib/stripe/application/services/stripe.service.interface";
+import { IStripeCreateCheckoutSessionIdUseCase } from "@/lib/stripe/application/use-case/stripe-create-checkout-session-id.use-case";
+import { IPostStripeCreateCheckoutSessionIdController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-create-checkout-sesison-id.controller";
 import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
+import { IUserFindByIdAsClientUseCase } from "@/lib/user/application/use-cases/user-find-by-id-as-client.use-case";
+import { IUserFindByIdAsClientController } from "@/lib/user/network-adapters/controllers/user-find-by-id-as-client.controller";
 
 export interface DI_RETURN_TYPES {
   // instrumentation
@@ -31,6 +36,13 @@ export interface DI_RETURN_TYPES {
 
   // user
   IUserRepository: IUserRepository;
+  IUserFindByIdAsClientUseCase: IUserFindByIdAsClientUseCase;
+  IUserFindByIdAsClientController: IUserFindByIdAsClientController;
+
+  // stripe
+  IStripeService: IStripeService;
+  IStripeCreateCheckoutSessionIdUseCase: IStripeCreateCheckoutSessionIdUseCase;
+  IPostStripeCreateCheckoutSessionIdController: IPostStripeCreateCheckoutSessionIdController;
 }
 
 export const DI_SYMBOLS = {
@@ -54,4 +66,17 @@ export const DI_SYMBOLS = {
 
   // user
   IUserRepository: Symbol.for("IUserRepository"),
+  IUserFindByIdAsClientUseCase: Symbol.for("IUserFindByIdAsClientUseCase"),
+  IUserFindByIdAsClientController: Symbol.for(
+    "IUserFindByIdAsClientController"
+  ),
+
+  // stripe
+  IStripeService: Symbol.for("IStripeService"),
+  IStripeCreateCheckoutSessionIdUseCase: Symbol.for(
+    "IStripeCreateCheckoutSessionIdUseCase"
+  ),
+  IPostStripeCreateCheckoutSessionIdController: Symbol.for(
+    "IPostStripeCreateCheckoutSessionIdController"
+  ),
 };
