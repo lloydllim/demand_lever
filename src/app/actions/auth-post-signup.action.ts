@@ -12,8 +12,11 @@ export const authPostSignupAction = async (input: IPostUserModel) => {
     "authPostSignupAction",
     { recordResponse: false },
     async () => {
-      const authSignupUseCase = getInjection("IAuthSignupUseCase");
-      const token = await authSignupUseCase(input);
+      const postAuthSignupController = getInjection(
+        "IPostAuthSignupController"
+      );
+
+      const { token } = await postAuthSignupController(input);
 
       cookieStore.set("session", token, {
         httpOnly: true,
