@@ -15,4 +15,5 @@ export interface IAuthService {
   comparePassword(password: string, hashedPassword: string): Promise<boolean>;
 
   signup(user: IPostUserModel): Promise<string>;
+  signin(email: string, password: string): Promise<string | null>;
 }

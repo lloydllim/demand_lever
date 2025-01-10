@@ -79,4 +79,27 @@ export const AuthService = class implements IAuthService {
       }
     );
   }
+
+  async signin(email: string, password: string): Promise<string | null> {
+    return this.instrumentationService.startSpan(
+      { name: "AuthService.signin" },
+      async () => {
+        const user = await this.userRepository.findByEmail(email);
+        const hashedPassword =
+          await this.userRepository.findByEmailAndReturnPassword(email);
+
+        if (!hashedPassword || !user) {
+          return null;
+        }
+
+        const isValid = await this.comparePassword(password, hashedPassword);
+
+        if (!isValid) {
+          return null;
+        }
+
+        return this.createToken(user.id, user.name, user.userType!, "1h");
+      }
+    );
+  }
 };
