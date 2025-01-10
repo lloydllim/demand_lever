@@ -38,4 +38,54 @@ export const UserRepository = class implements IUserRepository {
       }
     );
   }
+
+  async findByEmail(email: string): Promise<IReadUserModel | null> {
+    return await this.instrumentationService.startSpan(
+      { name: "UserRepository.findByEmail" },
+      async () => {
+        const prismaClient = this.prismaService.getClient();
+        const user = await prismaClient.user.findUnique({
+          where: {
+            user_email: email,
+          },
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        return {
+          id: user.user_id,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          name: user.user_name,
+          email: user.user_email,
+          userType: user.user_type as IReadUserModel["userType"],
+        };
+      }
+    );
+  }
+
+  async findByEmailAndReturnPassword(email: string): Promise<string | null> {
+    return await this.instrumentationService.startSpan(
+      { name: "UserRepository.findByEmailAndReturnPassword" },
+      async () => {
+        const prismaClient = this.prismaService.getClient();
+        const user = await prismaClient.user.findUnique({
+          where: {
+            user_email: email,
+          },
+          select: {
+            user_password: true,
+          },
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        return user.user_password;
+      }
+    );
+  }
 };
