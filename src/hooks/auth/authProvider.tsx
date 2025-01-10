@@ -45,12 +45,14 @@ const AuthProvider: React.FC<IAuthContextType> = (props: IAuthContextType) => {
       const response = await authVerifyTokenAction();
       const loginPathNameRegex = new RegExp(`^/login(/.*)?$`);
       const signupPathNameRegex = new RegExp(`^/signup(/.*)?$`);
+      const authPathnameRegex = new RegExp(`^/auth(/.*)?$`);
 
       // If the user is not logged in and the path is not /login/*, redirect to /login
       if (
         !response &&
         !loginPathNameRegex.test(pathName) &&
-        !signupPathNameRegex.test(pathName)
+        !signupPathNameRegex.test(pathName) &&
+        !authPathnameRegex.test(pathName)
       ) {
         routerPush("/login");
       } else {
