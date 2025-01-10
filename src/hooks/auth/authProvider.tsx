@@ -64,7 +64,7 @@ const AuthProvider: React.FC<IAuthContextType> = (props: IAuthContextType) => {
         }
       }
     } catch (error) {
-      console.error(error);
+      routerPush("/login");
     } finally {
       setLoading(false);
     }
