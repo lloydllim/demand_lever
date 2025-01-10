@@ -1,3 +1,4 @@
+import { createAuthModule } from "@/di/modules/create-auth-module";
 import { createCrashReporterModule } from "@/di/modules/create-crash-reporter-module";
 import { createInstrumentationModule } from "@/di/modules/create-instrumentation-module";
 import { createPrismaModule } from "@/di/modules/create-prisma-module";
@@ -27,6 +28,9 @@ ApplicationContainer.load(
 
 // prisma
 ApplicationContainer.load(Symbol("PrismaModule"), createPrismaModule());
+
+// auth
+ApplicationContainer.load(Symbol("AuthModule"), createAuthModule());
 
 export function getInjection<K extends DIKeys>(
   symbol: K
