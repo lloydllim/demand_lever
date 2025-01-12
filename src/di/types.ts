@@ -7,6 +7,10 @@ import { IPostAuthSignupController } from "@/lib/auth/network-adapters/controlle
 import { IPostAuthVerifyTokenController } from "@/lib/auth/network-adapters/controller/post-auth-verify-token.controller";
 import { ICrashReporterService } from "@/lib/crash-reporter/application/services/crash-reporter.service.interface";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
+import { INotificationRepository } from "@/lib/notification/application/repositories/notification.repository.interface";
+import { ICreateNotificationUseCase } from "@/lib/notification/application/use-cases/create-notification.use-case";
+import { IFindAllNotificationByUserIdUseCase } from "@/lib/notification/application/use-cases/find-all-notification-by-user-id.use-case";
+import { IReadAllNotificationByUserIdController } from "@/lib/notification/network-adapters/controllers/read-all-notification-by-user-id.controller";
 import { IPrismaService } from "@/lib/prisma/application/services/prisma.service.interface";
 import { IStripeService } from "@/lib/stripe/application/services/stripe.service.interface";
 import { IStripeCreateCheckoutSessionIdUseCase } from "@/lib/stripe/application/use-case/stripe-create-checkout-session-id.use-case";
@@ -43,6 +47,12 @@ export interface DI_RETURN_TYPES {
   IStripeService: IStripeService;
   IStripeCreateCheckoutSessionIdUseCase: IStripeCreateCheckoutSessionIdUseCase;
   IPostStripeCreateCheckoutSessionIdController: IPostStripeCreateCheckoutSessionIdController;
+
+  // notification
+  INotificationRepository: INotificationRepository;
+  ICreateNotificationUseCase: ICreateNotificationUseCase;
+  IFindAllNotificationByUserIdUseCase: IFindAllNotificationByUserIdUseCase;
+  IReadAllNotificationByUserIdController: IReadAllNotificationByUserIdController;
 }
 
 export const DI_SYMBOLS = {
@@ -78,5 +88,15 @@ export const DI_SYMBOLS = {
   ),
   IPostStripeCreateCheckoutSessionIdController: Symbol.for(
     "IPostStripeCreateCheckoutSessionIdController"
+  ),
+
+  // notification
+  INotificationRepository: Symbol.for("INotificationRepository"),
+  ICreateNotificationUseCase: Symbol.for("ICreateNotificationUseCase"),
+  IFindAllNotificationByUserIdUseCase: Symbol.for(
+    "IFindAllNotificationByUserIdUseCase"
+  ),
+  IReadAllNotificationByUserIdController: Symbol.for(
+    "IReadAllNotificationByUserIdController"
   ),
 };

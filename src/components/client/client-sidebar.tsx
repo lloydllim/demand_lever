@@ -1,13 +1,14 @@
 "use client";
+import { NotificationMenu } from "@/components/notification/notification";
 import {
   Box,
-  Button,
   Collapsible,
   DrawerBody,
   DrawerContent,
   DrawerHeader,
   DrawerRoot,
   Icon,
+  IconButton,
   Image,
 } from "@chakra-ui/react";
 import Link from "next/link";
@@ -205,7 +206,7 @@ const ClientSidebar: React.FC<IClientSidebarProps> = (
       }}
     >
       <div
-        className="p-4 fixed md:ml-[20rem] h-full w-full md:w-[80vw] space-y-2 overflow-y-scroll"
+        className="p-4 fixed md:pl-[20rem] h-full w-full md:w-full space-y-2 overflow-y-scroll"
         style={{
           // style the scroll to a thin line
           scrollbarWidth: "thin",
@@ -214,16 +215,20 @@ const ClientSidebar: React.FC<IClientSidebarProps> = (
           scrollMarginBottom: "1rem",
         }}
       >
-        <Button
-          className="hover:cursor-pointer md:hidden absolute top-4 right-4"
-          onClick={() => {
-            setDrawerOpen(!drawerOpen);
-          }}
-        >
-          <Icon>
-            <FaBars />
-          </Icon>
-        </Button>
+        <div className="flex justify-end space-x-4">
+          <NotificationMenu userId="1" />
+          <IconButton
+            variant={"ghost"}
+            className="hover:cursor-pointer md:hidden"
+            onClick={() => {
+              setDrawerOpen(!drawerOpen);
+            }}
+          >
+            <Icon>
+              <FaBars />
+            </Icon>
+          </IconButton>
+        </div>
 
         {props.children}
       </div>
