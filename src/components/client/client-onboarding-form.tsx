@@ -38,9 +38,7 @@ const formSchema = z.object({
   termsAndPrivacyAccepted: z.boolean(),
 });
 
-export type IClientOnboardingFormProps = {};
-
-const ClientOnboardingForm: React.FC<IClientOnboardingFormProps> = () => {
+const ClientOnboardingForm: React.FC = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
 

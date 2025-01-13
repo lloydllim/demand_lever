@@ -1,5 +1,5 @@
 "use client";
-import { NotificationMenu } from "@/components/notification/notification";
+import NotificationMenu from "@/components/notification/notification-menu";
 import {
   Box,
   Collapsible,
@@ -206,7 +206,7 @@ const ClientSidebar: React.FC<IClientSidebarProps> = (
       }}
     >
       <div
-        className="p-4 fixed md:pl-[20rem] h-full w-full md:w-full space-y-2 overflow-y-scroll"
+        className="fixed md:pl-[20rem] h-full w-full md:w-full space-y-2 overflow-y-scroll"
         style={{
           // style the scroll to a thin line
           scrollbarWidth: "thin",
@@ -215,8 +215,8 @@ const ClientSidebar: React.FC<IClientSidebarProps> = (
           scrollMarginBottom: "1rem",
         }}
       >
-        <div className="flex justify-end space-x-4">
-          <NotificationMenu userId="1" />
+        <div className="flex justify-end space-x-4 p-6">
+          <NotificationMenu />
           <IconButton
             variant={"ghost"}
             className="hover:cursor-pointer md:hidden"

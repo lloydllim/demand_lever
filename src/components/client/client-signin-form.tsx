@@ -1,6 +1,6 @@
 "use client";
 
-import { authPostSigninAction } from "@/app/actions/auth/auth-post-signin-action";
+import { postAuthSigninAction } from "@/app/actions/auth/post-auth-post-signin-action";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { toaster } from "@/components/ui/toaster";
@@ -18,9 +18,7 @@ const formSchema = z.object({
     .min(6, { message: "Password must be at least 6 characters" }),
 });
 
-export type IClientSigninFormProps = {};
-
-const ClientSigninForm: React.FC<IClientSigninFormProps> = () => {
+const ClientSigninForm: React.FC = () => {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -32,17 +30,16 @@ const ClientSigninForm: React.FC<IClientSigninFormProps> = () => {
   });
 
   const handleSubmit = async (input: z.infer<typeof formSchema>) => {
-    try {
-      // todo fix dirty redirect and manual user type assignment
-      await authPostSigninAction(input.email, input.password);
-      router.push("/clients");
-    } catch (error) {
+    const result = await postAuthSigninAction(input.email, input.password);
+
+    if (result.error) {
       toaster.create({
-        title: "Invalid credentials",
-        description: "Your email or password is incorrect.",
-        type: "error",
+        description: result.error,
+        type: "info",
       });
       form.setValue("password", "");
+    } else if (result.data) {
+      router.push("/clients");
     }
   };
 
