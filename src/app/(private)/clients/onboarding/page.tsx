@@ -1,10 +1,6 @@
 import ClientOnboardingForm from "@/components/client/client-onboarding-form";
 
-export type IClientOnboardingServerPageProps = {};
-
-const ClientOnboardingServerPage: React.FC<
-  IClientOnboardingServerPageProps
-> = async () => {
+const ClientOnboardingServerPage: React.FC = async () => {
   return <ClientOnboardingForm />;
 };
 

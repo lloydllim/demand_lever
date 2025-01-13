@@ -3,9 +3,9 @@ import { IPrismaService } from "@/lib/prisma/application/services/prisma.service
 import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
 import {
   IPostUserModel,
-  IReadUserClientModel,
-  IReadUserModel,
+  IUpdatedUserClient,
 } from "@/lib/user/entities/user.model";
+import { User } from "@prisma/client";
 
 export const UserRepository = class implements IUserRepository {
   constructor(
@@ -13,41 +13,34 @@ export const UserRepository = class implements IUserRepository {
     private readonly prismaService: IPrismaService
   ) {}
 
-  async create(user: IPostUserModel): Promise<IReadUserModel> {
+  async create(user: IPostUserModel): Promise<User> {
     return await this.instrumentationService.startSpan(
       { name: "UserRepository.create" },
       async () => {
         const prismaClient = this.prismaService.getClient();
         const createdUser = await prismaClient.user.create({
           data: {
-            user_type: user.userType,
-            user_email: user.email,
-            user_name: user.name,
-            user_password: user.password,
-            user_login_type: user.loginType,
+            userType: user.userType,
+            email: user.email,
+            name: user.name,
+            password: user.password,
+            loginType: user.loginType,
           },
         });
 
-        return {
-          id: createdUser.user_id,
-          createdAt: createdUser.createdAt,
-          updatedAt: createdUser.updatedAt,
-          name: createdUser.user_name,
-          email: createdUser.user_email,
-          userType: createdUser.user_type as IReadUserModel["userType"],
-        };
+        return createdUser;
       }
     );
   }
 
-  async findByEmail(email: string): Promise<IReadUserModel | null> {
+  async findByEmail(email: string): Promise<User | null> {
     return await this.instrumentationService.startSpan(
       { name: "UserRepository.findByEmail" },
       async () => {
         const prismaClient = this.prismaService.getClient();
         const user = await prismaClient.user.findUnique({
           where: {
-            user_email: email,
+            email: email,
           },
         });
 
@@ -55,14 +48,7 @@ export const UserRepository = class implements IUserRepository {
           return null;
         }
 
-        return {
-          id: user.user_id,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
-          name: user.user_name,
-          email: user.user_email,
-          userType: user.user_type as IReadUserModel["userType"],
-        };
+        return user;
       }
     );
   }
@@ -74,10 +60,10 @@ export const UserRepository = class implements IUserRepository {
         const prismaClient = this.prismaService.getClient();
         const user = await prismaClient.user.findUnique({
           where: {
-            user_email: email,
+            email: email,
           },
           select: {
-            user_password: true,
+            password: true,
           },
         });
 
@@ -85,19 +71,20 @@ export const UserRepository = class implements IUserRepository {
           return null;
         }
 
-        return user.user_password;
+        return user.password;
       }
     );
   }
 
-  async findByIdAsClient(id: string): Promise<IReadUserClientModel | null> {
+  async findByIdAsClient(id: string): Promise<User | null> {
     return await this.instrumentationService.startSpan(
       { name: "UserRepository.findByIdAsClient" },
       async () => {
         const prismaClient = this.prismaService.getClient();
         const user = await prismaClient.user.findUnique({
           where: {
-            user_id: id,
+            id: id,
+            userType: "clients",
           },
         });
 
@@ -105,15 +92,29 @@ export const UserRepository = class implements IUserRepository {
           return null;
         }
 
-        return {
-          id: user.user_id,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
-          name: user.user_name,
-          email: user.user_email,
-          userType: user.user_type as IReadUserClientModel["userType"],
-          hasCompletedOnboarding: user.hasCompletedOnboarding,
-        } as IReadUserClientModel;
+        return user;
+      }
+    );
+  }
+
+  async updateClientByUserId(
+    userId: string,
+    input: Partial<IUpdatedUserClient>
+  ): Promise<User> {
+    return await this.instrumentationService.startSpan(
+      { name: "UserRepository.updateClientByUserId" },
+      async () => {
+        const prismaClient = this.prismaService.getClient();
+        const updatedUser = await prismaClient.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            ...input,
+          },
+        });
+
+        return updatedUser;
       }
     );
   }

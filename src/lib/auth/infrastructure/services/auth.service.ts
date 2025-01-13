@@ -52,8 +52,8 @@ export const AuthService = class implements IAuthService {
 
         return this.createToken(
           createdUser.id,
-          createdUser.name,
-          createdUser.userType,
+          createdUser.email,
+          createdUser.userType!,
           "1h"
         );
       }
