@@ -25,7 +25,7 @@ const ClientServerPage: React.FC = async () => {
       redirect("/clients/onboarding");
     }
 
-    if (!user.stripeCustomerId) {
+    if (!user.stripeSubscriptionId) {
       redirect("/clients/plans");
     }
 

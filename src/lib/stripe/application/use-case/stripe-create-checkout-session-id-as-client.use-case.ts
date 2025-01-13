@@ -1,5 +1,7 @@
+import { UnauthorizedError } from "@/lib/auth/entities/auth.error";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
 import { IStripeService } from "@/lib/stripe/application/services/stripe.service.interface";
+import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
 
 export type IStripeCreateCheckoutSessionIdAsClientUseCase = ReturnType<
   typeof stripeCreateCheckoutSessionIdAsClientUseCase
@@ -7,7 +9,8 @@ export type IStripeCreateCheckoutSessionIdAsClientUseCase = ReturnType<
 export const stripeCreateCheckoutSessionIdAsClientUseCase =
   (
     instrumentationService: IInstrumentationService,
-    stripeService: IStripeService
+    stripeService: IStripeService,
+    userRepository: IUserRepository
   ) =>
   async (
     sdrManagerQuantity: number,
@@ -20,7 +23,19 @@ export const stripeCreateCheckoutSessionIdAsClientUseCase =
   ) => {
     return instrumentationService.startSpan(
       { name: "stripeCreateCheckoutSessionIdAsClientUseCase" },
-      () => {
+      async () => {
+        const user = await userRepository.findById(userId);
+
+        if (!user) {
+          throw new UnauthorizedError("User not found.");
+        }
+
+        let customerId: string | undefined = undefined;
+
+        if (user.stripeCustomerId) {
+          customerId = user.stripeCustomerId;
+        }
+
         return stripeService.createCheckoutSessionIdAsClient(
           sdrManagerQuantity,
           sdrQuantity,
@@ -28,7 +43,8 @@ export const stripeCreateCheckoutSessionIdAsClientUseCase =
           payrollFeeAmount,
           successUrl,
           cancelUrl,
-          userId
+          userId,
+          customerId
         );
       }
     );

@@ -36,6 +36,15 @@ export const stripeProcessWebhookUseCase =
               stripeCustomerId: subscription.customer as string,
             });
 
+            // update customer in stripe with user id
+            await stripeService
+              .getClient()
+              .customers.update(subscription.customer as string, {
+                metadata: {
+                  user_id: subscriptionUser.id,
+                },
+              });
+
             return true;
             break;
           // payments
