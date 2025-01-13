@@ -42,7 +42,10 @@ model User {
   marketingCalendly           String?
   marketingPreferences        String?
 
-  analytics Analytics[]
+  stripeCustomerId String?
+
+  analytics    Analytics[]
+  Notification Notification[]
 }
 
 model Scheduler {
@@ -242,4 +245,15 @@ model Messages {
   messages_created_at      DateTime @default(now())
 
   conversations Conversation @relation(fields: [messages_conversation_id], references: [conversation_id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [user_id])
+  userId  String
+  message String
+  read    Boolean @default(false)
 }

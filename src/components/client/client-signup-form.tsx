@@ -1,6 +1,6 @@
 "use client";
 
-import { authPostSignupAction } from "@/app/actions/auth/auth-post-signup.action";
+import { postAuthSignupAction } from "@/app/actions/auth/post-auth-post-signup.action";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { toaster } from "@/components/ui/toaster";
@@ -27,9 +27,7 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-export type IClientSignupFormProps = {};
-
-const ClientSignupForm: React.FC<IClientSignupFormProps> = () => {
+const ClientSignupForm: React.FC = () => {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,22 +41,21 @@ const ClientSignupForm: React.FC<IClientSignupFormProps> = () => {
   });
 
   const handleSubmit = async (input: z.infer<typeof formSchema>) => {
-    try {
-      // todo fix dirty redirect and manual user type assignment
-      await authPostSignupAction({
-        email: input.email,
-        name: input.name,
-        password: input.password,
-        userType: "clients",
-        loginType: "manual",
-      });
-      router.push("/clients");
-    } catch (error) {
+    const result = await postAuthSignupAction({
+      email: input.email,
+      name: input.name,
+      password: input.password,
+      loginType: "manual",
+      userType: "clients",
+    });
+
+    if (result.error) {
       toaster.create({
-        title: "Something went wrong",
-        description: "The team has been notified. Please try again later.",
-        type: "error",
+        description: result.error,
+        type: "info",
       });
+    } else {
+      router.push("/clients");
     }
   };
 

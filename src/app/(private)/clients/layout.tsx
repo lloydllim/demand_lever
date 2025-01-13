@@ -7,9 +7,7 @@ export type IClientPageLayoutProps = {
 const ClientPageLayout: React.FC<IClientPageLayoutProps> = ({ children }) => {
   return (
     <ClientSidebar>
-      <div className="flex flex-col h-screen items-center justify-center space-y-4">
-        {children}
-      </div>
+      <div className="flex flex-col space-y-4 p-6">{children}</div>
     </ClientSidebar>
   );
 };

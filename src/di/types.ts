@@ -7,13 +7,19 @@ import { IPostAuthSignupController } from "@/lib/auth/network-adapters/controlle
 import { IPostAuthVerifyTokenController } from "@/lib/auth/network-adapters/controller/post-auth-verify-token.controller";
 import { ICrashReporterService } from "@/lib/crash-reporter/application/services/crash-reporter.service.interface";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
+import { INotificationRepository } from "@/lib/notification/application/repositories/notification.repository.interface";
+import { ICreateNotificationUseCase } from "@/lib/notification/application/use-cases/create-notification.use-case";
+import { IFindAllNotificationByUserIdUseCase } from "@/lib/notification/application/use-cases/find-all-notification-by-user-id.use-case";
+import { IUpdateAllNotificationByIdsToReadUseCase } from "@/lib/notification/application/use-cases/update-all-notification-by-ids-to-read.use-case";
+import { IReadAllNotificationByUserIdController } from "@/lib/notification/network-adapters/controllers/read-all-notification-by-user-id.controller";
+import { IUpdateAllNotificationByIdsToReadController } from "@/lib/notification/network-adapters/controllers/update-all-notification-by-ids-to-read.controller";
 import { IPrismaService } from "@/lib/prisma/application/services/prisma.service.interface";
 import { IStripeService } from "@/lib/stripe/application/services/stripe.service.interface";
 import { IStripeCreateCheckoutSessionIdUseCase } from "@/lib/stripe/application/use-case/stripe-create-checkout-session-id.use-case";
 import { IPostStripeCreateCheckoutSessionIdController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-create-checkout-sesison-id.controller";
 import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
-import { IUserFindByIdAsClientUseCase } from "@/lib/user/application/use-cases/user-find-by-id-as-client.use-case";
-import { IUserFindByIdAsClientController } from "@/lib/user/network-adapters/controllers/user-find-by-id-as-client.controller";
+import { IFindUserByIdAsClientUseCase } from "@/lib/user/application/use-cases/find-user-by-id-as-client-use-case";
+import { IReadUserByIdAsClientController } from "@/lib/user/network-adapters/controllers/read-user-by-id-as-client.controller";
 
 export interface DI_RETURN_TYPES {
   // instrumentation
@@ -27,22 +33,37 @@ export interface DI_RETURN_TYPES {
 
   // auth
   IAuthService: IAuthService;
+
   IAuthVerifyTokenUseCase: IAuthVerifyTokenUseCase;
   IPostAuthVerifyTokenController: IPostAuthVerifyTokenController;
+
   IAuthSignupUseCase: IAuthSignupUseCase;
   IPostAuthSignupController: IPostAuthSignupController;
+
   IAuthSigninUseCase: IAuthSigninUseCase;
   IPostAuthSigninController: IPostAuthSigninController;
 
   // user
   IUserRepository: IUserRepository;
-  IUserFindByIdAsClientUseCase: IUserFindByIdAsClientUseCase;
-  IUserFindByIdAsClientController: IUserFindByIdAsClientController;
+
+  IFindUserByIdAsClientUseCase: IFindUserByIdAsClientUseCase;
+  IReadUserByIdAsClientController: IReadUserByIdAsClientController;
 
   // stripe
   IStripeService: IStripeService;
   IStripeCreateCheckoutSessionIdUseCase: IStripeCreateCheckoutSessionIdUseCase;
   IPostStripeCreateCheckoutSessionIdController: IPostStripeCreateCheckoutSessionIdController;
+
+  // notification
+  INotificationRepository: INotificationRepository;
+
+  ICreateNotificationUseCase: ICreateNotificationUseCase;
+
+  IFindAllNotificationByUserIdUseCase: IFindAllNotificationByUserIdUseCase;
+  IReadAllNotificationByUserIdController: IReadAllNotificationByUserIdController;
+
+  IUpdateAllNotificationByIdsToReadUseCase: IUpdateAllNotificationByIdsToReadUseCase;
+  IUpdateAllNotificationByIdsToReadController: IUpdateAllNotificationByIdsToReadController;
 }
 
 export const DI_SYMBOLS = {
@@ -57,18 +78,21 @@ export const DI_SYMBOLS = {
 
   // auth
   IAuthService: Symbol.for("IAuthService"),
+
   IAuthVerifyTokenUseCase: Symbol.for("IAuthVerifyTokenUseCase"),
   IPostAuthVerifyTokenController: Symbol.for("IPostAuthVerifyTokenController"),
+
   IAuthSignupUseCase: Symbol.for("IAuthSignupUseCase"),
   IPostAuthSignupController: Symbol.for("IPostAuthSignupController"),
+
   IAuthSigninUseCase: Symbol.for("IAuthSigninUseCase"),
   IPostAuthSigninController: Symbol.for("IPostAuthSigninController"),
 
   // user
   IUserRepository: Symbol.for("IUserRepository"),
-  IUserFindByIdAsClientUseCase: Symbol.for("IUserFindByIdAsClientUseCase"),
-  IUserFindByIdAsClientController: Symbol.for(
-    "IUserFindByIdAsClientController"
+  IFindUserByIdAsClientUseCase: Symbol.for("IFindUserByIdAsClientUseCase"),
+  IReadUserByIdAsClientController: Symbol.for(
+    "IReadUserByIdAsClientController"
   ),
 
   // stripe
@@ -78,5 +102,21 @@ export const DI_SYMBOLS = {
   ),
   IPostStripeCreateCheckoutSessionIdController: Symbol.for(
     "IPostStripeCreateCheckoutSessionIdController"
+  ),
+
+  // notification
+  INotificationRepository: Symbol.for("INotificationRepository"),
+  ICreateNotificationUseCase: Symbol.for("ICreateNotificationUseCase"),
+  IFindAllNotificationByUserIdUseCase: Symbol.for(
+    "IFindAllNotificationByUserIdUseCase"
+  ),
+  IReadAllNotificationByUserIdController: Symbol.for(
+    "IReadAllNotificationByUserIdController"
+  ),
+  IUpdateAllNotificationByIdsToReadUseCase: Symbol.for(
+    "IUpdateAllNotificationByIdsToReadUseCase"
+  ),
+  IUpdateAllNotificationByIdsToReadController: Symbol.for(
+    "IUpdateAllNotificationByIdsToReadController"
   ),
 };

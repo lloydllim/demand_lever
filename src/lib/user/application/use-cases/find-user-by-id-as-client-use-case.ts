@@ -2,11 +2,11 @@ import { IInstrumentationService } from "@/lib/instrumentation/application/servi
 import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
 import { IReadUserClientModel } from "@/lib/user/entities/user.model";
 
-export type IUserFindByIdAsClientUseCase = ReturnType<
-  typeof userFindByIdAsClientUseCase
+export type IFindUserByIdAsClientUseCase = ReturnType<
+  typeof findUserByIdAsClientUseCase
 >;
 
-export const userFindByIdAsClientUseCase =
+export const findUserByIdAsClientUseCase =
   (
     instrumentationService: IInstrumentationService,
     UserRepository: IUserRepository

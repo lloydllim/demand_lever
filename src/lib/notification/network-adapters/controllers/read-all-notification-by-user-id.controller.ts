@@ -2,41 +2,46 @@ import { IAuthService } from "@/lib/auth/application/services/auth.service.inter
 import { UnauthenticatedError } from "@/lib/auth/entities/auth.error";
 import { InputParseError } from "@/lib/common/entities/controller.error";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
-import { IStripeCreateCheckoutSessionIdUseCase } from "@/lib/stripe/application/use-case/stripe-create-checkout-session-id.use-case";
+import { IFindAllNotificationByUserIdUseCase } from "@/lib/notification/application/use-cases/find-all-notification-by-user-id.use-case";
+import { INotificationModel } from "@/lib/notification/entities/notification.model";
 import { z } from "zod";
 
 const presenter = (
   instrumentationService: IInstrumentationService,
-  sessionId: string
+  notifications: INotificationModel[]
 ) => {
   return instrumentationService.startSpan({ name: "presenter" }, () => {
-    return sessionId;
+    return notifications.map((notification) => {
+      return {
+        message: notification.message,
+        createdAt: notification.createdAt,
+        read: notification.read,
+        id: notification.id,
+      };
+    });
   });
 };
 
 const inputData = z.object({
-  sdrManagerQuantity: z.number().int().max(1),
-  sdrQuantity: z.number().int(),
-  sdrDataPackage: z.enum(["299", "499"]),
-  payrollFeeAmount: z.number().int(),
   token: z.string(),
 });
 
-export type IPostStripeCreateCheckoutSessionIdController = ReturnType<
-  typeof postStripeCreateCheckoutSessionIdController
+export type IReadAllNotificationByUserIdController = ReturnType<
+  typeof readAllNotificationByUserIdController
 >;
 
-export const postStripeCreateCheckoutSessionIdController =
+export const readAllNotificationByUserIdController =
   (
     instrumentationService: IInstrumentationService,
     authService: IAuthService,
-    stripeCreateCheckoutSessionIdUseCase: IStripeCreateCheckoutSessionIdUseCase
+    findAllNotificationByUserIdUseCase: IFindAllNotificationByUserIdUseCase
   ) =>
   async (input: z.infer<typeof inputData>) => {
     return instrumentationService.startSpan(
-      { name: "postStripeCreateCheckoutSessionIdController" },
+      { name: "ReadAllNotificationByUserIdController" },
       async () => {
         const { data, error: inputParseError } = inputData.safeParse(input);
+
         if (inputParseError) {
           throw new InputParseError("Invalid input", {
             cause: inputParseError,
@@ -49,16 +54,11 @@ export const postStripeCreateCheckoutSessionIdController =
           throw new UnauthenticatedError("User not signed in.");
         }
 
-        const sessionId = await stripeCreateCheckoutSessionIdUseCase(
-          data.sdrManagerQuantity,
-          data.sdrQuantity,
-          data.sdrDataPackage,
-          data.payrollFeeAmount,
-          "http://localhost:3000",
-          "http://localhost:3000",
+        const notifications = await findAllNotificationByUserIdUseCase(
           currentUser.user_id
         );
-        return presenter(instrumentationService, sessionId);
+
+        return presenter(instrumentationService, notifications);
       }
     );
   };
