@@ -1,5 +1,6 @@
 import env from "@/env";
 import { IAuthService } from "@/lib/auth/application/services/auth.service.interface";
+import { IAuth } from "@/lib/auth/entities/auth.type";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
 import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
 import { IPostUserModel } from "@/lib/user/entities/user.model";
@@ -12,11 +13,11 @@ export const AuthService = class implements IAuthService {
     private readonly userRepository: IUserRepository
   ) {}
 
-  verifyToken(token: string) {
+  verifyToken(token: string): IAuth {
     return this.instrumentationService.startSpan(
       { name: "AuthService.verifyToken" },
       () => {
-        return jwt.verify(token, env.JWT_TOKEN);
+        return jwt.verify(token, env.JWT_TOKEN) as unknown as IAuth;
       }
     );
   }
@@ -51,8 +52,8 @@ export const AuthService = class implements IAuthService {
 
         return this.createToken(
           createdUser.id,
-          createdUser.name,
-          createdUser.userType,
+          createdUser.email,
+          createdUser.userType!,
           "1h"
         );
       }

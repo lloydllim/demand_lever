@@ -1,6 +1,7 @@
 import { createAuthModule } from "@/di/modules/create-auth-module";
 import { createCrashReporterModule } from "@/di/modules/create-crash-reporter-module";
 import { createInstrumentationModule } from "@/di/modules/create-instrumentation-module";
+import { createNotificationModule } from "@/di/modules/create-notification-module";
 import { createPrismaModule } from "@/di/modules/create-prisma-module";
 import { createStripeModule } from "@/di/modules/create-stripe-module";
 import { createUserModule } from "@/di/modules/create-user-module";
@@ -39,6 +40,12 @@ ApplicationContainer.load(Symbol("AuthModule"), createAuthModule());
 
 // stripe
 ApplicationContainer.load(Symbol("StripeModule"), createStripeModule());
+
+// notification
+ApplicationContainer.load(
+  Symbol("NotificationModule"),
+  createNotificationModule()
+);
 
 export function getInjection<K extends DIKeys>(
   symbol: K

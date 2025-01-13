@@ -1,7 +1,9 @@
 import { DI_SYMBOLS } from "@/di/types";
-import { userFindByIdAsClientUseCase } from "@/lib/user/application/use-cases/user-find-by-id-as-client.use-case";
+import { findUserByIdAsClientUseCase } from "@/lib/user/application/use-cases/find-user-by-id-as-client-use-case";
+import { updateUserByIdAsClientUseCase } from "@/lib/user/application/use-cases/update-user-by-id-as-client.use-case";
 import { UserRepository } from "@/lib/user/infrastructure/repositories/user.repository";
-import { userFindByIdAsClientController } from "@/lib/user/network-adapters/controllers/user-find-by-id-as-client.controller";
+import { readUserByIdAsClientController } from "@/lib/user/network-adapters/controllers/read-user-by-id-as-client.controller";
+import { updateUserByIdAsClientController } from "@/lib/user/network-adapters/controllers/update-user-by-id-as-client.controller";
 import { createModule } from "@evyweb/ioctopus";
 
 export const createUserModule = () => {
@@ -15,17 +17,33 @@ export const createUserModule = () => {
     ]);
 
   userModule
-    .bind(DI_SYMBOLS.IUserFindByIdAsClientUseCase)
-    .toHigherOrderFunction(userFindByIdAsClientUseCase, [
+    .bind(DI_SYMBOLS.IFindUserByIdAsClientUseCase)
+    .toHigherOrderFunction(findUserByIdAsClientUseCase, [
       DI_SYMBOLS.IInstrumentationService,
       DI_SYMBOLS.IUserRepository,
     ]);
 
   userModule
-    .bind(DI_SYMBOLS.IUserFindByIdAsClientController)
-    .toHigherOrderFunction(userFindByIdAsClientController, [
+    .bind(DI_SYMBOLS.IReadUserByIdAsClientController)
+    .toHigherOrderFunction(readUserByIdAsClientController, [
       DI_SYMBOLS.IInstrumentationService,
-      DI_SYMBOLS.IUserFindByIdAsClientUseCase,
+      DI_SYMBOLS.IAuthService,
+      DI_SYMBOLS.IFindUserByIdAsClientUseCase,
+    ]);
+
+  userModule
+    .bind(DI_SYMBOLS.IUpdateUserByIdAsClientUseCase)
+    .toHigherOrderFunction(updateUserByIdAsClientUseCase, [
+      DI_SYMBOLS.IInstrumentationService,
+      DI_SYMBOLS.IUserRepository,
+    ]);
+
+  userModule
+    .bind(DI_SYMBOLS.IUpdateUserByIdAsClientController)
+    .toHigherOrderFunction(updateUserByIdAsClientController, [
+      DI_SYMBOLS.IInstrumentationService,
+      DI_SYMBOLS.IAuthService,
+      DI_SYMBOLS.IUpdateUserByIdAsClientUseCase,
     ]);
 
   return userModule;

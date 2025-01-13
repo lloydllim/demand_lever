@@ -1,10 +1,10 @@
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
 import { IStripeService } from "@/lib/stripe/application/services/stripe.service.interface";
 
-export type IStripeCreateCheckoutSessionIdUseCase = ReturnType<
-  typeof stripeCreateCheckoutSessionIdUseCase
+export type IStripeCreateCheckoutSessionIdAsClientUseCase = ReturnType<
+  typeof stripeCreateCheckoutSessionIdAsClientUseCase
 >;
-export const stripeCreateCheckoutSessionIdUseCase =
+export const stripeCreateCheckoutSessionIdAsClientUseCase =
   (
     instrumentationService: IInstrumentationService,
     stripeService: IStripeService
@@ -19,9 +19,9 @@ export const stripeCreateCheckoutSessionIdUseCase =
     userId: string
   ) => {
     return instrumentationService.startSpan(
-      { name: "stripeCreateCheckoutSessionIdUseCase" },
+      { name: "stripeCreateCheckoutSessionIdAsClientUseCase" },
       () => {
-        return stripeService.createCheckoutSessionId(
+        return stripeService.createCheckoutSessionIdAsClient(
           sdrManagerQuantity,
           sdrQuantity,
           sdrDataPackage,

@@ -1,8 +1,16 @@
 "use client";
 
+import { updateUserByIdAsClientAction } from "@/app/actions/user/client/update-user-by-id-as-client.action";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/ui/field";
+import {
+  SelectContent,
+  SelectItem,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from "@/components/ui/select";
 import {
   StepsCompletedContent,
   StepsContent,
@@ -11,68 +19,67 @@ import {
   StepsRoot,
 } from "@/components/ui/steps";
 import { toaster } from "@/components/ui/toaster";
-import { Input, createListCollection } from "@chakra-ui/react";
+import {
+  IUpdateUserClient,
+  UpdateUserClient,
+} from "@/lib/user/entities/user.model";
+import { createListCollection, Input, Textarea } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
 
-const referralForList = createListCollection({
+const companySize = createListCollection({
   items: [
-    { label: "$299 confirmed meeting", value: "299" },
-    { label: "$499 confirmed meeting", value: "499" },
+    { label: "1-10", value: "1-10" },
+    { label: "11-20", value: "11-20" },
+    { label: "21-50", value: "21-50" },
+    { label: "51-100", value: "51-100" },
+    { label: "101+", value: "101+" },
   ],
 });
 
-const formSchema = z.object({
-  phoneNumber: z.string(),
-  linkedinUrl: z.string().url(),
-  companyName: z.string(),
-  companyWebsite: z.string().url(),
-  referralFor: z.enum(["299", "499"]),
-
-  aggrementAccepted: z.boolean(),
-  expectationAccepted: z.boolean(),
-  termsAndPrivacyAccepted: z.boolean(),
-});
-
-export type IClientOnboardingFormProps = {};
-
-const ClientOnboardingForm: React.FC<IClientOnboardingFormProps> = () => {
+const ClientOnboardingForm: React.FC = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<IUpdateUserClient>({
+    resolver: zodResolver(UpdateUserClient),
     mode: "onChange",
     defaultValues: {
       phoneNumber: "",
       linkedinUrl: "",
       companyName: "",
       companyWebsite: "",
-      referralFor: undefined,
-      aggrementAccepted: false,
+      agreementAccepted: false,
       expectationAccepted: false,
       termsAndPrivacyAccepted: false,
+      marketingCalendlyLink: "",
+      marketingCompanySize: null,
+      marketingIndustry: "",
+      marketingPreferences: "",
+      marketingPrefferedJobTitle: "",
+      marketingValueProposition: "",
     },
   });
 
-  const handleSubmit = async (input: z.infer<typeof formSchema>) => {
-    try {
-      // todo fix dirty redirect and manual user type assignment
-      toaster.create({
-        title: "Not implemented",
-        description: "This feature is not implemented yet.",
-        type: "success",
-      });
-    } catch (error) {
+  const handleSubmit = async (input: IUpdateUserClient) => {
+    const result = await updateUserByIdAsClientAction(input);
+
+    if (result.error) {
       toaster.create({
         title: "Something went wrong",
-        description: "The team has been notified. Please try again later.",
+        description: result.error,
         type: "error",
       });
+    } else if (result.data) {
+      toaster.create({
+        title: "Success",
+        description: "Your profile has been updated.",
+        type: "success",
+      });
+      router.push("/clients/plan");
     }
   };
 
@@ -84,7 +91,8 @@ const ClientOnboardingForm: React.FC<IClientOnboardingFormProps> = () => {
   } = form;
 
   const validateCurrentStep = async () => {
-    let fieldsToValidate: (keyof z.infer<typeof formSchema>)[] = [];
+    let fieldsToValidate: (keyof IUpdateUserClient)[] = [];
+    console.log(currentStep);
     switch (currentStep) {
       case 0:
         fieldsToValidate = ["phoneNumber", "linkedinUrl"];
@@ -94,7 +102,18 @@ const ClientOnboardingForm: React.FC<IClientOnboardingFormProps> = () => {
         break;
       case 2:
         fieldsToValidate = [
-          "aggrementAccepted",
+          "marketingValueProposition",
+          "marketingIndustry",
+          "marketingCompanySize",
+          "marketingPrefferedJobTitle",
+          "marketingCalendlyLink",
+          "marketingPreferences",
+        ];
+        break;
+
+      case 3:
+        fieldsToValidate = [
+          "agreementAccepted",
           "expectationAccepted",
           "termsAndPrivacyAccepted",
         ];
@@ -115,6 +134,10 @@ const ClientOnboardingForm: React.FC<IClientOnboardingFormProps> = () => {
   const handlePrev = () => {
     setCurrentStep((prev) => (prev > 0 ? prev - 1 : prev));
   };
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   return (
     <form
@@ -138,6 +161,11 @@ const ClientOnboardingForm: React.FC<IClientOnboardingFormProps> = () => {
           />
           <StepsItem
             index={2}
+            title="Marketing"
+          />
+
+          <StepsItem
+            index={3}
             title="Agreement"
           />
         </StepsList>
@@ -196,6 +224,99 @@ const ClientOnboardingForm: React.FC<IClientOnboardingFormProps> = () => {
           index={2}
           className="space-y-4"
         >
+          <Field
+            label="Value Proposition"
+            invalid={errors.marketingValueProposition?.message !== undefined}
+            errorText={errors.marketingValueProposition?.message}
+          >
+            <Textarea
+              placeholder="What is your most compelling value proposition?"
+              {...form.register("marketingValueProposition")}
+            />
+          </Field>
+          <Field
+            label="Target Industry"
+            invalid={errors.marketingIndustry?.message !== undefined}
+            errorText={errors.marketingIndustry?.message}
+          >
+            <Textarea
+              placeholder={
+                "What is the industry that you target? Is it a hard requirement?"
+              }
+              {...form.register("marketingIndustry")}
+            />
+          </Field>
+
+          <Field
+            label="What is your ideal target's company headcount?"
+            invalid={!!errors.marketingCompanySize}
+            errorText={errors.marketingCompanySize?.message}
+            width="320px"
+          >
+            <Controller
+              control={form.control}
+              name="marketingCompanySize"
+              render={({ field }) => (
+                <SelectRoot
+                  name={field.name}
+                  value={field.value ? [field.value] : undefined}
+                  onValueChange={({ value }) => field.onChange(value[0])}
+                  onInteractOutside={() => field.onBlur()}
+                  collection={companySize}
+                >
+                  <SelectTrigger>
+                    <SelectValueText placeholder="Select company size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {companySize.items.map((company) => (
+                      <SelectItem
+                        item={company}
+                        key={company.value}
+                      >
+                        {company.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              )}
+            />
+          </Field>
+
+          <Field
+            label="Job Title"
+            invalid={errors.marketingPrefferedJobTitle?.message !== undefined}
+            errorText={errors.marketingPrefferedJobTitle?.message}
+          >
+            <Input
+              placeholder="What are the job titles that our team should focus on?"
+              {...form.register("marketingPrefferedJobTitle")}
+            />
+          </Field>
+          <Field
+            label="What is the best Calendly link that we can use for this campaign?"
+            invalid={errors.marketingCalendlyLink?.message !== undefined}
+            errorText={errors.marketingCalendlyLink?.message}
+          >
+            <Input
+              placeholder="Calendly Link"
+              {...form.register("marketingCalendlyLink")}
+            />
+          </Field>
+          <Field
+            label="Preferences"
+            invalid={errors.marketingPreferences?.message !== undefined}
+            errorText={errors.marketingPreferences?.message}
+          >
+            <Textarea
+              placeholder="What are your preferences for this campaign?"
+              {...form.register("marketingPreferences")}
+            />
+          </Field>
+        </StepsContent>
+        <StepsContent
+          index={3}
+          className="space-y-4"
+        >
           <p className="text-sm text-gray-600">
             PipeLinear offers incentives like Amazon eGift cards to prospects
             to have a 30 minute interview about services company goals and
@@ -214,7 +335,7 @@ const ClientOnboardingForm: React.FC<IClientOnboardingFormProps> = () => {
 
             <li>
               We book sales meetings with target market prospects that are
-              buying what our client's offer.
+              buying what our client&apos;s offer.
             </li>
 
             <li>
@@ -243,12 +364,12 @@ const ClientOnboardingForm: React.FC<IClientOnboardingFormProps> = () => {
 
           <Controller
             control={form.control}
-            name="aggrementAccepted"
+            name="agreementAccepted"
             render={({ field }) => (
               <Field
                 disabled={field.disabled}
-                invalid={errors.aggrementAccepted?.message !== undefined}
-                errorText={errors.aggrementAccepted?.message}
+                invalid={errors.agreementAccepted?.message !== undefined}
+                errorText={errors.agreementAccepted?.message}
               >
                 <Checkbox
                   checked={field.value}
@@ -321,7 +442,7 @@ const ClientOnboardingForm: React.FC<IClientOnboardingFormProps> = () => {
           <Button
             size="sm"
             onClick={handleNext}
-            disabled={isSubmitting}
+            disabled={isSubmitting || currentStep === 4}
           >
             Next
           </Button>

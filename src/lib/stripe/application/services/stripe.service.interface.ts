@@ -1,5 +1,7 @@
+import Stripe from "stripe";
+
 export interface IStripeService {
-  createCheckoutSessionId(
+  createCheckoutSessionIdAsClient(
     sdrManagerQuantity: number,
     sdrQuantity: number,
     sdrDataPackage: "299" | "499",
@@ -8,4 +10,6 @@ export interface IStripeService {
     cancelUrl: string,
     userId: string
   ): Promise<string>;
+
+  constructEvent(body: string, signature: string): Promise<Stripe.Event>;
 }

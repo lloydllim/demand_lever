@@ -1,6 +1,6 @@
 "use client";
 
-import { authVerifyTokenAction } from "@/app/actions/auth/auth-verify-token.action";
+import { postAuthVerifyTokenAction } from "@/app/actions/auth/post-auth-verify-token.action";
 import { usePathname, useRouter } from "next/navigation";
 import React, {
   createContext,
@@ -42,7 +42,14 @@ const AuthProvider: React.FC<IAuthContextType> = (props: IAuthContextType) => {
   const authVerifyToken = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await authVerifyTokenAction();
+      const result = await postAuthVerifyTokenAction();
+
+      if (result.error) {
+        routerPush("/login");
+        return;
+      }
+
+      const response = result.data;
       const loginPathNameRegex = new RegExp(`^/login(/.*)?$`);
       const signupPathNameRegex = new RegExp(`^/signup(/.*)?$`);
       const authPathnameRegex = new RegExp(`^/auth(/.*)?$`);

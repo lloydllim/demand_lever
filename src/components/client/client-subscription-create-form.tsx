@@ -1,6 +1,6 @@
 "use client";
 
-import { stripeCreateCheckoutSessionIdAction } from "@/app/actions/stripe/stripe-create-checkout-session-id.action";
+import { stripeCreateCheckoutSessionIdAction } from "@/app/actions/stripe/stripe-create-checkout-session-id-as-client.action";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import {
@@ -50,11 +50,7 @@ const formSchema = z.object({
   sdrDataPackage: z.enum(["299", "499"]),
 });
 
-export type IClientSubscriptionCreateFormProps = {};
-
-const ClientSubscriptionCreateForm: React.FC<
-  IClientSubscriptionCreateFormProps
-> = () => {
+const ClientSubscriptionCreateForm: React.FC = () => {
   const [amount, setAmount] = useState<number>(0.0);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -67,42 +63,37 @@ const ClientSubscriptionCreateForm: React.FC<
   });
 
   const handleSubmit = async (input: z.infer<typeof formSchema>) => {
-    try {
-      const stripe = await stripePromise;
-      if (!stripe) {
-        toaster.create({
-          title: "Error",
-          description: "Stripe failed to load. Please try again later.",
-          type: "error",
-        });
-        return;
-      }
-
-      const inputData = {
-        ...input,
-        payrollFeeAmount: Math.round(amount * 0.04),
-      };
-
-      const checkoutSessionId = await stripeCreateCheckoutSessionIdAction(
-        inputData
-      );
-
-      const result = await stripe.redirectToCheckout({
-        sessionId: checkoutSessionId,
-      });
-
-      if (result.error) {
-        toaster.create({
-          title: "Checkout Error",
-          description: result.error.message,
-          type: "error",
-        });
-      }
-    } catch {
+    const stripe = await stripePromise;
+    if (!stripe) {
       toaster.create({
-        title: "Submission Failed",
-        description: "Please try again later.",
+        title: "Error",
+        description: "Stripe failed to load. Please try again later.",
         type: "error",
+      });
+      return;
+    }
+
+    const inputData = {
+      ...input,
+      payrollFeeAmount: Math.round(amount * 0.04),
+    };
+
+    const result = await stripeCreateCheckoutSessionIdAction(inputData);
+
+    if (result.error) {
+      toaster.create({
+        title: "Checkout Error",
+        description: result.error,
+        type: "error",
+      });
+    } else if (result.data) {
+      const checkoutSessionId = result.data;
+      toaster.create({
+        description: "Redirecting to Stripe Checkout",
+        type: "success",
+      });
+      await stripe.redirectToCheckout({
+        sessionId: checkoutSessionId,
       });
     }
   };
