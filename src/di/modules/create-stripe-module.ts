@@ -1,7 +1,9 @@
 import { DI_SYMBOLS } from "@/di/types";
+import { stripeCheckSessionIdAndUpdateUseCase } from "@/lib/stripe/application/use-case/stripe-check-session-id-and-update.use-case";
 import { stripeCreateCheckoutSessionIdAsClientUseCase } from "@/lib/stripe/application/use-case/stripe-create-checkout-session-id-as-client.use-case";
 import { stripeProcessWebhookUseCase } from "@/lib/stripe/application/use-case/stripe-process-webhook.use-case";
 import { StripeService } from "@/lib/stripe/infrastructure/services/stripe.service";
+import { postStripeCheckSessionIdAndUpdateController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-check-session-id-and-update.controller";
 import { postStripeCreateCheckoutSessionIdAsClientController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-create-checkout-session-id-as-client.controller";
 import { postStripeProcessWebhookController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-process-webhook.controller";
 import { createModule } from "@evyweb/ioctopus";
@@ -45,6 +47,22 @@ export const createStripeModule = () => {
     .toHigherOrderFunction(postStripeProcessWebhookController, [
       DI_SYMBOLS.IInstrumentationService,
       DI_SYMBOLS.IStripeProcessWebhookUseCase,
+    ]);
+
+  stripeModule
+    .bind(DI_SYMBOLS.IStripeCheckSessionIdAndUpdateUseCase)
+    .toHigherOrderFunction(stripeCheckSessionIdAndUpdateUseCase, [
+      DI_SYMBOLS.IInstrumentationService,
+      DI_SYMBOLS.IStripeService,
+      DI_SYMBOLS.IUserRepository,
+    ]);
+
+  stripeModule
+    .bind(DI_SYMBOLS.IPostStripeCheckSessionIdAndUpdateController)
+    .toHigherOrderFunction(postStripeCheckSessionIdAndUpdateController, [
+      DI_SYMBOLS.IInstrumentationService,
+      DI_SYMBOLS.IAuthService,
+      DI_SYMBOLS.IStripeCheckSessionIdAndUpdateUseCase,
     ]);
 
   return stripeModule;

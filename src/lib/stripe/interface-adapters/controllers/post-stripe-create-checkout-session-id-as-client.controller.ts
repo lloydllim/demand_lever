@@ -17,6 +17,8 @@ const presenter = (
 
 const inputData = CreateCheckoutSessiosIdAsClientInput.extend({
   token: z.string(),
+  successUrl: z.string(),
+  cancelUrl: z.string(),
 });
 
 export type IPostStripeCreateCheckoutSessionIdAsClientController = ReturnType<
@@ -51,8 +53,8 @@ export const postStripeCreateCheckoutSessionIdAsClientController =
           data.sdrQuantity,
           data.sdrDataPackage,
           data.payrollFeeAmount,
-          "http://localhost:3000",
-          "http://localhost:3000",
+          data.successUrl,
+          data.cancelUrl,
           currentUser.user_id
         );
         return presenter(instrumentationService, sessionId);

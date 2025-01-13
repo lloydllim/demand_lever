@@ -190,7 +190,6 @@ const ClientSidebar: React.FC<IClientSidebarProps> = (
     } else {
       setDrawerOpen(true);
     }
-    console.log(isMobile);
   }, [isMobile]);
   return (
     <DrawerRoot

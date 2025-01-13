@@ -53,15 +53,21 @@ const AuthProvider: React.FC<IAuthContextType> = (props: IAuthContextType) => {
       const loginPathNameRegex = new RegExp(`^/login(/.*)?$`);
       const signupPathNameRegex = new RegExp(`^/signup(/.*)?$`);
       const authPathnameRegex = new RegExp(`^/auth(/.*)?$`);
-      const clientsPathNameRegex = new RegExp(`^/client(/.*)?$`);
+      const clientsPathNameRegex = new RegExp(`^/clients(/.*)?$`);
+
+      const shouldRedirect = (pathname: string) => {
+        const strippedPathname = pathname.split("?")[0];
+
+        return (
+          loginPathNameRegex.test(strippedPathname) ||
+          signupPathNameRegex.test(strippedPathname) ||
+          authPathnameRegex.test(strippedPathname) ||
+          clientsPathNameRegex.test(strippedPathname)
+        );
+      };
 
       // If the user is not logged in and the path is not /login/*, redirect to /login
-      if (
-        !response &&
-        !loginPathNameRegex.test(pathName) &&
-        !signupPathNameRegex.test(pathName) &&
-        !authPathnameRegex.test(pathName)
-      ) {
+      if (!response && !shouldRedirect(pathName)) {
         routerPush("/login");
       } else {
         // If the user is logged in and the path is /login/*, redirect to appropriate page
@@ -69,8 +75,9 @@ const AuthProvider: React.FC<IAuthContextType> = (props: IAuthContextType) => {
 
         if (
           data.user_type === "clients" &&
-          !clientsPathNameRegex.test(pathName)
+          !clientsPathNameRegex.test(pathName.split("?")[0])
         ) {
+          console.log(pathName);
           routerPush("/clients");
         }
       }

@@ -5,6 +5,7 @@ import { getInjection } from "@/di/container";
 import { UnauthenticatedError } from "@/lib/auth/entities/auth.error";
 import { InputParseError } from "@/lib/common/entities/controller.error";
 import { ICreateCheckoutSessiosIdAsClientInput } from "@/lib/stripe/entities/stripe-client.types";
+import { headers } from "next/headers";
 
 export const stripeCreateCheckoutSessionIdAction = async (
   input: ICreateCheckoutSessiosIdAsClientInput
@@ -23,6 +24,10 @@ export const stripeCreateCheckoutSessionIdAction = async (
           await postStripeCreateCheckoutSessionIdAsClientController({
             ...input,
             token: token,
+            successUrl:
+              (await headers()).get("origin") +
+              "/clients/plans?session_id={CHECKOUT_SESSION_ID}",
+            cancelUrl: (await headers()).get("origin") + "/clients/plans",
           });
 
         return {
