@@ -79,7 +79,7 @@ const ClientOnboardingForm: React.FC = () => {
         description: "Your profile has been updated.",
         type: "success",
       });
-      router.push("/clients/plan");
+      router.push("/clients/plans");
     }
   };
 
