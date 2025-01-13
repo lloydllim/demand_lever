@@ -3,6 +3,7 @@
 import { cookieGetSessionOrJwt } from "@/app/actions/utils/cookie-get-session-or-jwt";
 import { getInjection } from "@/di/container";
 import { UnauthenticatedError } from "@/lib/auth/entities/auth.error";
+import { TokenExpiredError } from "jsonwebtoken";
 
 export const ReadUserByIdAsClientAction = async () => {
   const instrumentationService = getInjection("IInstrumentationService");
@@ -32,6 +33,12 @@ export const ReadUserByIdAsClientAction = async () => {
         if (error instanceof UnauthenticatedError) {
           return {
             error: "Unauthenticated. Sign in to continue.",
+          };
+        }
+
+        if (error instanceof TokenExpiredError) {
+          return {
+            error: "Token expired. Sign in to continue.",
           };
         }
 

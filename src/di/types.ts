@@ -15,8 +15,10 @@ import { IReadAllNotificationByUserIdController } from "@/lib/notification/netwo
 import { IUpdateAllNotificationByIdsToReadController } from "@/lib/notification/network-adapters/controllers/update-all-notification-by-ids-to-read.controller";
 import { IPrismaService } from "@/lib/prisma/application/services/prisma.service.interface";
 import { IStripeService } from "@/lib/stripe/application/services/stripe.service.interface";
+import { IStripeCheckSessionIdAndUpdateUseCase } from "@/lib/stripe/application/use-case/stripe-check-session-id-and-update.use-case";
 import { IStripeCreateCheckoutSessionIdAsClientUseCase } from "@/lib/stripe/application/use-case/stripe-create-checkout-session-id-as-client.use-case";
 import { IStripeProcessWebhookUseCase } from "@/lib/stripe/application/use-case/stripe-process-webhook.use-case";
+import { IPostStripeCheckSessionIdAndUpdateController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-check-session-id-and-update.controller";
 import { IPostStripeCreateCheckoutSessionIdAsClientController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-create-checkout-session-id-as-client.controller";
 import { IPostStripeProcessWebhookController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-process-webhook.controller";
 import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
@@ -64,6 +66,9 @@ export interface DI_RETURN_TYPES {
 
   IStripeProcessWebhookUseCase: IStripeProcessWebhookUseCase;
   IPostStripeProcessWebhookController: IPostStripeProcessWebhookController;
+
+  IStripeCheckSessionIdAndUpdateUseCase: IStripeCheckSessionIdAndUpdateUseCase;
+  IPostStripeCheckSessionIdAndUpdateController: IPostStripeCheckSessionIdAndUpdateController;
 
   // notification
   INotificationRepository: INotificationRepository;
@@ -125,6 +130,13 @@ export const DI_SYMBOLS = {
   IStripeProcessWebhookUseCase: Symbol.for("IStripeProcessWebhookUseCase"),
   IPostStripeProcessWebhookController: Symbol.for(
     "IPostStripeProcessWebhookController"
+  ),
+
+  IStripeCheckSessionIdAndUpdateUseCase: Symbol.for(
+    "IStripeCheckSessionIdAndUpdateUseCase"
+  ),
+  IPostStripeCheckSessionIdAndUpdateController: Symbol.for(
+    "IPostStripeCheckSessionIdAndUpdateController"
   ),
 
   // notification
