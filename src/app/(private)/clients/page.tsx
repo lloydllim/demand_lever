@@ -1,28 +1,44 @@
-import { authVerifyTokenAction } from "@/app/actions/auth/auth-verify-token.action";
-import { IToken } from "@/app/actions/auth/utils/token.type";
-import { userFindByIdAsClientAction } from "@/app/actions/user/user-find-by-id-as-client.action";
+import { ReadUserByIdAsClientAction } from "@/app/actions/user/read-user-by-id-as-client.action";
+import { Card } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
 
-export type IClientServerPage = {};
+const ClientServerPage: React.FC = async () => {
+  const responseUser = await ReadUserByIdAsClientAction();
 
-const ClientServerPage: React.FC<IClientServerPage> = async () => {
-  let redirectTo;
+  if (responseUser.error) {
+    return (
+      <Card.Root>
+        <Card.Header>
+          <Card.Title>Something went wrong</Card.Title>
+        </Card.Header>
+        <Card.Body>
+          <p>{responseUser.error}</p>
+        </Card.Body>
+      </Card.Root>
+    );
+  }
 
-  try {
-    const token = (await authVerifyTokenAction()) as IToken;
-    const user = await userFindByIdAsClientAction(token.user_id);
+  if (responseUser.result) {
+    const user = responseUser.result;
 
     if (!user.hasCompletedOnboarding) {
-      redirectTo = "/clients/onboarding";
+      redirect("/clients/onboarding");
     }
 
-    return <div>Client page</div>;
-  } catch (error) {
-    redirectTo = "/client/auth/signin";
-  } finally {
-    if (redirectTo) {
-      redirect(redirectTo);
+    if (!user.stripeCustomerId) {
+      redirect("/clients/plans");
     }
+
+    return (
+      <Card.Root>
+        <Card.Header>
+          <Card.Title>Your profile</Card.Title>
+        </Card.Header>
+        <Card.Body>
+          <p>{responseUser.result.email}</p>
+        </Card.Body>
+      </Card.Root>
+    );
   }
 };
 
