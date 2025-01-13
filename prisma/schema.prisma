@@ -43,7 +43,8 @@ model User {
   marketingCalendlyLink       String?
   marketingPreferences        String?
 
-  stripeCustomerId String?
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
 
   analytics    Analytics[]
   Notification Notification[]

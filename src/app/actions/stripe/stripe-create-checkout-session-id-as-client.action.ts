@@ -4,17 +4,10 @@ import { cookieGetSessionOrJwt } from "@/app/actions/utils/cookie-get-session-or
 import { getInjection } from "@/di/container";
 import { UnauthenticatedError } from "@/lib/auth/entities/auth.error";
 import { InputParseError } from "@/lib/common/entities/controller.error";
-import { z } from "zod";
-
-const inputData = z.object({
-  sdrManagerQuantity: z.number().int().max(1),
-  sdrQuantity: z.number().int(),
-  sdrDataPackage: z.enum(["299", "499"]),
-  payrollFeeAmount: z.number().int(),
-});
+import { ICreateCheckoutSessiosIdAsClientInput } from "@/lib/stripe/entities/stripe-client.types";
 
 export const stripeCreateCheckoutSessionIdAction = async (
-  input: z.infer<typeof inputData>
+  input: ICreateCheckoutSessiosIdAsClientInput
 ) => {
   const instrumentationService = getInjection("IInstrumentationService");
   return await instrumentationService.instrumentServerAction(
@@ -24,11 +17,10 @@ export const stripeCreateCheckoutSessionIdAction = async (
       try {
         const token = await cookieGetSessionOrJwt();
 
-        const postStripeCreateCheckoutSessionIdController = getInjection(
-          "IPostStripeCreateCheckoutSessionIdController"
-        );
+        const postStripeCreateCheckoutSessionIdAsClientController =
+          getInjection("IPostStripeCreateCheckoutSessionIdAsClientController");
         const stripeSessionId =
-          await postStripeCreateCheckoutSessionIdController({
+          await postStripeCreateCheckoutSessionIdAsClientController({
             ...input,
             token: token,
           });

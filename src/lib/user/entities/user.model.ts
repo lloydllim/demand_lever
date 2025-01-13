@@ -46,6 +46,7 @@ export const UserModel = z.object({
 
   // stripe
   stripeCustomerId: z.string().nullable(),
+  stripeSubscriptionId: z.string().nullable(),
 });
 
 export type IUserModel = z.infer<typeof UserModel>;
@@ -96,6 +97,7 @@ export const ReadUserClientModel = UserModel.pick({
   marketingCalendlyLink: true,
   marketingPreferences: true,
   stripeCustomerId: true,
+  stripeSubscriptionId: true,
 });
 
 export type IReadUserClientModel = z.infer<typeof ReadUserClientModel>;
