@@ -56,6 +56,9 @@ export const UserClientModel = UserModel.extend({
   marketingPrefferedJobTitle: z.string(),
   marketingCalendlyLink: z.string().url(),
   marketingPreferences: z.string(),
+
+  // stripe
+  stripeCustomerId: z.string().nullable(),
 });
 
 export type IUserClientModel = z.infer<typeof UserClientModel>;
