@@ -1,8 +1,8 @@
+import { IAuth } from "@/lib/auth/entities/auth.type";
 import { IPostUserModel } from "@/lib/user/entities/user.model";
-import { JwtPayload } from "jsonwebtoken";
 
 export interface IAuthService {
-  verifyToken(token: string): string | JwtPayload;
+  verifyToken(token: string): IAuth;
 
   createToken(
     user_id: string,

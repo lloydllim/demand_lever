@@ -33,7 +33,7 @@ export const PostAuthSignupController =
         const { data, error: inputParseError } = inputData.safeParse(input);
 
         if (inputParseError) {
-          throw new InputParseError("Invalid input", {
+          throw new InputParseError("Invalid data.", {
             cause: inputParseError.errors,
           });
         }
