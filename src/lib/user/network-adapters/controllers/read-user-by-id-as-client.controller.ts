@@ -6,15 +6,18 @@ import {
 import { InputParseError } from "@/lib/common/entities/controller.error";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
 import { IFindUserByIdAsClientUseCase } from "@/lib/user/application/use-cases/find-user-by-id-as-client-use-case";
-import { IReadUserClientModel } from "@/lib/user/entities/user.model";
+import {
+  IReadUserClientModel,
+  ReadUserClientModel,
+} from "@/lib/user/entities/user.model";
 import { z } from "zod";
 
 const presenter = (
   instrumentationService: IInstrumentationService,
   user: IReadUserClientModel
 ) => {
-  return instrumentationService.startSpan({ name: "presenter" }, async () => {
-    return user;
+  return instrumentationService.startSpan({ name: "presenter" }, () => {
+    return ReadUserClientModel.parse(user);
   });
 };
 

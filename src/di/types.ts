@@ -19,7 +19,9 @@ import { IStripeCreateCheckoutSessionIdUseCase } from "@/lib/stripe/application/
 import { IPostStripeCreateCheckoutSessionIdController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-create-checkout-sesison-id.controller";
 import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
 import { IFindUserByIdAsClientUseCase } from "@/lib/user/application/use-cases/find-user-by-id-as-client-use-case";
+import { IUpdateUserByIdAsClientUseCase } from "@/lib/user/application/use-cases/update-user-by-id-as-client.use-case";
 import { IReadUserByIdAsClientController } from "@/lib/user/network-adapters/controllers/read-user-by-id-as-client.controller";
+import { IUpdateUserByIdAsClientController } from "@/lib/user/network-adapters/controllers/update-user-by-id-as-client.controller";
 
 export interface DI_RETURN_TYPES {
   // instrumentation
@@ -48,6 +50,9 @@ export interface DI_RETURN_TYPES {
 
   IFindUserByIdAsClientUseCase: IFindUserByIdAsClientUseCase;
   IReadUserByIdAsClientController: IReadUserByIdAsClientController;
+
+  IUpdateUserByIdAsClientUseCase: IUpdateUserByIdAsClientUseCase;
+  IUpdateUserByIdAsClientController: IUpdateUserByIdAsClientController;
 
   // stripe
   IStripeService: IStripeService;
@@ -90,9 +95,15 @@ export const DI_SYMBOLS = {
 
   // user
   IUserRepository: Symbol.for("IUserRepository"),
+
   IFindUserByIdAsClientUseCase: Symbol.for("IFindUserByIdAsClientUseCase"),
   IReadUserByIdAsClientController: Symbol.for(
     "IReadUserByIdAsClientController"
+  ),
+
+  IUpdateUserByIdAsClientUseCase: Symbol.for("IUpdateUserByIdAsClientUseCase"),
+  IUpdateUserByIdAsClientController: Symbol.for(
+    "IUpdateUserByIdAsClientController"
   ),
 
   // stripe

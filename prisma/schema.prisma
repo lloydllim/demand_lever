@@ -11,13 +11,13 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user_id               String  @id @default(uuid())
-  user_name             String
-  user_email            String  @unique
-  user_login_type       String
-  user_password         String?
+  id                    String  @id @default(uuid()) @map("user_id")
+  name                  String  @map("user_name")
+  email                 String  @unique @map("user_email")
+  loginType             String  @map("user_login_type")
+  userType              String? @map("user_type")
+  password              String? @map("user_password")
   user_picture          String?
-  user_type             String?
   user_access_token     String?
   user_refresh_token    String?
   user_token_expired_at Int?
@@ -35,11 +35,12 @@ model User {
   companyName    String?
   companyWebsite String?
 
+  marketingCompanySize        String?
+  marketingPrefferedJobTitle  String?
   marketingValueProposition   String?
   marketingIndustry           String?
-  marktingCompanySize         String?
   marketingPreferredJobTitles String?
-  marketingCalendly           String?
+  marketingCalendlyLink       String?
   marketingPreferences        String?
 
   stripeCustomerId String?
@@ -83,7 +84,7 @@ model Analytics {
   analytics_count      Int      @default(0)
   analytics_created_at DateTime @default(now())
 
-  users User @relation(fields: [analytics_user], references: [user_id])
+  users User @relation(fields: [analytics_user], references: [id])
 }
 
 model Proposal {
@@ -252,7 +253,7 @@ model Notification {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user    User    @relation(fields: [userId], references: [user_id])
+  user    User    @relation(fields: [userId], references: [id])
   userId  String
   message String
   read    Boolean @default(false)

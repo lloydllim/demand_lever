@@ -1,6 +1,10 @@
+import { InputParseError } from "@/lib/common/entities/controller.error";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
 import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
-import { IReadUserClientModel } from "@/lib/user/entities/user.model";
+import {
+  IReadUserClientModel,
+  ReadUserClientModel,
+} from "@/lib/user/entities/user.model";
 
 export type IFindUserByIdAsClientUseCase = ReturnType<
   typeof findUserByIdAsClientUseCase
@@ -19,7 +23,17 @@ export const findUserByIdAsClientUseCase =
         if (!user) {
           return null;
         }
-        return user;
+
+        const { data, error: inputParseError } =
+          ReadUserClientModel.safeParse(user);
+
+        if (inputParseError) {
+          throw new InputParseError("Invalid data.", {
+            cause: inputParseError,
+          });
+        }
+
+        return data;
       }
     );
   };
