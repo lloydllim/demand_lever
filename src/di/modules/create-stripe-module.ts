@@ -18,6 +18,7 @@ export const createStripeModule = () => {
     .toHigherOrderFunction(stripeCreateCheckoutSessionIdAsClientUseCase, [
       DI_SYMBOLS.IInstrumentationService,
       DI_SYMBOLS.IStripeService,
+      DI_SYMBOLS.IUserRepository,
     ]);
 
   stripeModule
