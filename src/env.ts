@@ -11,6 +11,7 @@ const envSchema = z.object({
   NODE_ENV: z.string(),
 
   STRIPE_SECRET_KEY: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
   STRIPE_SDR_PRODUCT_ID: z.string(),
   STRIPE_SDR_PRICE_ID: z.string(),
   STRIPE_SDR_MANAGER_PRODUCT_ID: z.string(),

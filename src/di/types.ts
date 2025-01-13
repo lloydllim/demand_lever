@@ -15,8 +15,10 @@ import { IReadAllNotificationByUserIdController } from "@/lib/notification/netwo
 import { IUpdateAllNotificationByIdsToReadController } from "@/lib/notification/network-adapters/controllers/update-all-notification-by-ids-to-read.controller";
 import { IPrismaService } from "@/lib/prisma/application/services/prisma.service.interface";
 import { IStripeService } from "@/lib/stripe/application/services/stripe.service.interface";
-import { IStripeCreateCheckoutSessionIdUseCase } from "@/lib/stripe/application/use-case/stripe-create-checkout-session-id.use-case";
-import { IPostStripeCreateCheckoutSessionIdController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-create-checkout-sesison-id.controller";
+import { IStripeCreateCheckoutSessionIdAsClientUseCase } from "@/lib/stripe/application/use-case/stripe-create-checkout-session-id-as-client.use-case";
+import { IStripeProcessWebhookUseCase } from "@/lib/stripe/application/use-case/stripe-process-webhook.use-case";
+import { IPostStripeCreateCheckoutSessionIdAsClientController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-create-checkout-session-id-as-client.controller";
+import { IPostStripeProcessWebhookController } from "@/lib/stripe/interface-adapters/controllers/post-stripe-process-webhook.controller";
 import { IUserRepository } from "@/lib/user/application/repositories/user.repository.interface";
 import { IFindUserByIdAsClientUseCase } from "@/lib/user/application/use-cases/find-user-by-id-as-client-use-case";
 import { IUpdateUserByIdAsClientUseCase } from "@/lib/user/application/use-cases/update-user-by-id-as-client.use-case";
@@ -56,8 +58,12 @@ export interface DI_RETURN_TYPES {
 
   // stripe
   IStripeService: IStripeService;
-  IStripeCreateCheckoutSessionIdUseCase: IStripeCreateCheckoutSessionIdUseCase;
-  IPostStripeCreateCheckoutSessionIdController: IPostStripeCreateCheckoutSessionIdController;
+
+  IStripeCreateCheckoutSessionIdAsClientUseCase: IStripeCreateCheckoutSessionIdAsClientUseCase;
+  IPostStripeCreateCheckoutSessionIdAsClientController: IPostStripeCreateCheckoutSessionIdAsClientController;
+
+  IStripeProcessWebhookUseCase: IStripeProcessWebhookUseCase;
+  IPostStripeProcessWebhookController: IPostStripeProcessWebhookController;
 
   // notification
   INotificationRepository: INotificationRepository;
@@ -108,11 +114,17 @@ export const DI_SYMBOLS = {
 
   // stripe
   IStripeService: Symbol.for("IStripeService"),
-  IStripeCreateCheckoutSessionIdUseCase: Symbol.for(
-    "IStripeCreateCheckoutSessionIdUseCase"
+
+  IStripeCreateCheckoutSessionIdAsClientUseCase: Symbol.for(
+    "IStripeCreateCheckoutSessionIdAsClientUseCase"
   ),
-  IPostStripeCreateCheckoutSessionIdController: Symbol.for(
-    "IPostStripeCreateCheckoutSessionIdController"
+  IPostStripeCreateCheckoutSessionIdAsClientController: Symbol.for(
+    "IPostStripeCreateCheckoutSessionIdAsClientController"
+  ),
+
+  IStripeProcessWebhookUseCase: Symbol.for("IStripeProcessWebhookUseCase"),
+  IPostStripeProcessWebhookController: Symbol.for(
+    "IPostStripeProcessWebhookController"
   ),
 
   // notification

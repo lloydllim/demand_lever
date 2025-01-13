@@ -2,7 +2,8 @@ import { IAuthService } from "@/lib/auth/application/services/auth.service.inter
 import { UnauthenticatedError } from "@/lib/auth/entities/auth.error";
 import { InputParseError } from "@/lib/common/entities/controller.error";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
-import { IStripeCreateCheckoutSessionIdUseCase } from "@/lib/stripe/application/use-case/stripe-create-checkout-session-id.use-case";
+import { IStripeCreateCheckoutSessionIdAsClientUseCase } from "@/lib/stripe/application/use-case/stripe-create-checkout-session-id-as-client.use-case";
+import { CreateCheckoutSessiosIdAsClientInput } from "@/lib/stripe/entities/stripe-client.types";
 import { z } from "zod";
 
 const presenter = (
@@ -14,23 +15,19 @@ const presenter = (
   });
 };
 
-const inputData = z.object({
-  sdrManagerQuantity: z.number().int().max(1),
-  sdrQuantity: z.number().int(),
-  sdrDataPackage: z.enum(["299", "499"]),
-  payrollFeeAmount: z.number().int(),
+const inputData = CreateCheckoutSessiosIdAsClientInput.extend({
   token: z.string(),
 });
 
-export type IPostStripeCreateCheckoutSessionIdController = ReturnType<
-  typeof postStripeCreateCheckoutSessionIdController
+export type IPostStripeCreateCheckoutSessionIdAsClientController = ReturnType<
+  typeof postStripeCreateCheckoutSessionIdAsClientController
 >;
 
-export const postStripeCreateCheckoutSessionIdController =
+export const postStripeCreateCheckoutSessionIdAsClientController =
   (
     instrumentationService: IInstrumentationService,
     authService: IAuthService,
-    stripeCreateCheckoutSessionIdUseCase: IStripeCreateCheckoutSessionIdUseCase
+    stripeCreateCheckoutSessionIdAsClient: IStripeCreateCheckoutSessionIdAsClientUseCase
   ) =>
   async (input: z.infer<typeof inputData>) => {
     return instrumentationService.startSpan(
@@ -49,7 +46,7 @@ export const postStripeCreateCheckoutSessionIdController =
           throw new UnauthenticatedError("User not signed in.");
         }
 
-        const sessionId = await stripeCreateCheckoutSessionIdUseCase(
+        const sessionId = await stripeCreateCheckoutSessionIdAsClient(
           data.sdrManagerQuantity,
           data.sdrQuantity,
           data.sdrDataPackage,

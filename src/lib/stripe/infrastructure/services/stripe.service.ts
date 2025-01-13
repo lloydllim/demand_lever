@@ -9,7 +9,7 @@ export const StripeService = class implements IStripeService {
     private readonly stripeClient: Stripe = new Stripe(env.STRIPE_SECRET_KEY)
   ) {}
 
-  async createCheckoutSessionId(
+  async createCheckoutSessionIdAsClient(
     sdrManagerQuantity: number,
     sdrQuantity: number,
     sdrDataPackage: "299" | "499",
@@ -62,12 +62,27 @@ export const StripeService = class implements IStripeService {
           mode: "subscription",
           success_url: successUrl,
           cancel_url: cancelUrl,
-          metadata: {
-            userId,
+          subscription_data: {
+            metadata: {
+              user_id: userId,
+            },
           },
         });
 
         return session.id;
+      }
+    );
+  }
+
+  constructEvent(body: string, signature: string): Promise<Stripe.Event> {
+    return this.instrumentationService.startSpan(
+      { name: "StripeService.constructEvent" },
+      async () => {
+        return this.stripeClient.webhooks.constructEvent(
+          body,
+          signature,
+          env.STRIPE_WEBHOOK_SECRET
+        );
       }
     );
   }

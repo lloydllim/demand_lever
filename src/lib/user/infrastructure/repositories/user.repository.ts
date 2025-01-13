@@ -4,6 +4,7 @@ import { IUserRepository } from "@/lib/user/application/repositories/user.reposi
 import {
   IPostUserModel,
   IUpdatedUserClient,
+  IUpdateUserModel,
 } from "@/lib/user/entities/user.model";
 import { User } from "@prisma/client";
 
@@ -29,6 +30,22 @@ export const UserRepository = class implements IUserRepository {
         });
 
         return createdUser;
+      }
+    );
+  }
+
+  async findById(id: string): Promise<User | null> {
+    return await this.instrumentationService.startSpan(
+      { name: "UserRepository.findById" },
+      async () => {
+        const prismaClient = this.prismaService.getClient();
+        const user = await prismaClient.user.findUnique({
+          where: {
+            id: id,
+          },
+        });
+
+        return user;
       }
     );
   }
@@ -93,6 +110,48 @@ export const UserRepository = class implements IUserRepository {
         }
 
         return user;
+      }
+    );
+  }
+
+  async findByStripeCustomerId(
+    stripeCustomerId: string
+  ): Promise<User | null> {
+    return await this.instrumentationService.startSpan(
+      { name: "UserRepository.findByStripeCustomerId" },
+      async () => {
+        const prismaClient = this.prismaService.getClient();
+        const user = await prismaClient.user.findFirst({
+          where: {
+            stripeCustomerId: stripeCustomerId,
+          },
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        return user;
+      }
+    );
+  }
+
+  async updateById(
+    id: string,
+    input: Partial<IUpdateUserModel>
+  ): Promise<User> {
+    return await this.instrumentationService.startSpan(
+      { name: "UserRepository.updateById" },
+      async () => {
+        const prismaClient = this.prismaService.getClient();
+        const updatedUser = await prismaClient.user.update({
+          where: {
+            id: id,
+          },
+          data: input,
+        });
+
+        return updatedUser;
       }
     );
   }
