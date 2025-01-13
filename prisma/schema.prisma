@@ -42,8 +42,9 @@ model User {
   marketingCalendly           String?
   marketingPreferences        String?
 
-  analytics Analytics[]
+  stripeCustomerId String?
 
+  analytics    Analytics[]
   Notification Notification[]
 }
 
@@ -251,8 +252,8 @@ model Notification {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user   User   @relation(fields: [userId], references: [user_id])
-  userId String
-
+  user    User    @relation(fields: [userId], references: [user_id])
+  userId  String
   message String
+  read    Boolean @default(false)
 }
