@@ -1,3 +1,5 @@
+import { IAuthService } from "@/lib/auth/application/services/auth.service.interface";
+import { UnauthenticatedError } from "@/lib/auth/entities/auth.error";
 import { InputParseError } from "@/lib/common/entities/controller.error";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
 import { IFindAllNotificationByUserIdUseCase } from "@/lib/notification/application/use-cases/find-all-notification-by-user-id.use-case";
@@ -13,13 +15,15 @@ const presenter = (
       return {
         message: notification.message,
         createdAt: notification.createdAt,
+        read: notification.read,
+        id: notification.id,
       };
     });
   });
 };
 
 const inputData = z.object({
-  userId: z.string(),
+  token: z.string(),
 });
 
 export type IReadAllNotificationByUserIdController = ReturnType<
@@ -29,6 +33,7 @@ export type IReadAllNotificationByUserIdController = ReturnType<
 export const readAllNotificationByUserIdController =
   (
     instrumentationService: IInstrumentationService,
+    authService: IAuthService,
     findAllNotificationByUserIdUseCase: IFindAllNotificationByUserIdUseCase
   ) =>
   async (input: z.infer<typeof inputData>) => {
@@ -39,13 +44,20 @@ export const readAllNotificationByUserIdController =
 
         if (inputParseError) {
           throw new InputParseError("Invalid input", {
-            cause: inputParseError.errors,
+            cause: inputParseError,
           });
         }
 
+        const currentUser = authService.verifyToken(data.token);
+
+        if (!currentUser) {
+          throw new UnauthenticatedError("User not signed in.");
+        }
+
         const notifications = await findAllNotificationByUserIdUseCase(
-          data.userId
+          currentUser.user_id
         );
+
         return presenter(instrumentationService, notifications);
       }
     );

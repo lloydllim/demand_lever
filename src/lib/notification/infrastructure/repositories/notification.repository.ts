@@ -43,4 +43,27 @@ export const NotificationRepository = class
       }
     );
   }
+
+  async updateAllByNotificationIdsToRead(
+    notificationIds: string[]
+  ): Promise<number> {
+    return await this.instrumentationService.startSpan(
+      { name: "NotificationRepository.updateAllNotReadByIds" },
+      async () => {
+        const prismaClient = this.prismaService.getClient();
+        const notifications = await prismaClient.notification.updateMany({
+          where: {
+            id: {
+              in: notificationIds,
+            },
+          },
+          data: {
+            read: true,
+          },
+        });
+
+        return notifications.count;
+      }
+    );
+  }
 };
