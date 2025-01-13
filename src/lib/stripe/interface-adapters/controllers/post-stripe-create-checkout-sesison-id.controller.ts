@@ -1,3 +1,5 @@
+import { IAuthService } from "@/lib/auth/application/services/auth.service.interface";
+import { UnauthenticatedError } from "@/lib/auth/entities/auth.error";
 import { InputParseError } from "@/lib/common/entities/controller.error";
 import { IInstrumentationService } from "@/lib/instrumentation/application/services/instrumentation.service.interface";
 import { IStripeCreateCheckoutSessionIdUseCase } from "@/lib/stripe/application/use-case/stripe-create-checkout-session-id.use-case";
@@ -17,7 +19,7 @@ const inputData = z.object({
   sdrQuantity: z.number().int(),
   sdrDataPackage: z.enum(["299", "499"]),
   payrollFeeAmount: z.number().int(),
-  userId: z.string(),
+  token: z.string(),
 });
 
 export type IPostStripeCreateCheckoutSessionIdController = ReturnType<
@@ -27,7 +29,8 @@ export type IPostStripeCreateCheckoutSessionIdController = ReturnType<
 export const postStripeCreateCheckoutSessionIdController =
   (
     instrumentationService: IInstrumentationService,
-    StripeCreateCheckoutSessionIdUseCase: IStripeCreateCheckoutSessionIdUseCase
+    authService: IAuthService,
+    stripeCreateCheckoutSessionIdUseCase: IStripeCreateCheckoutSessionIdUseCase
   ) =>
   async (input: z.infer<typeof inputData>) => {
     return instrumentationService.startSpan(
@@ -40,14 +43,20 @@ export const postStripeCreateCheckoutSessionIdController =
           });
         }
 
-        const sessionId = await StripeCreateCheckoutSessionIdUseCase(
+        const currentUser = authService.verifyToken(data.token);
+
+        if (!currentUser) {
+          throw new UnauthenticatedError("User not signed in.");
+        }
+
+        const sessionId = await stripeCreateCheckoutSessionIdUseCase(
           data.sdrManagerQuantity,
           data.sdrQuantity,
           data.sdrDataPackage,
           data.payrollFeeAmount,
           "http://localhost:3000",
           "http://localhost:3000",
-          data.userId
+          currentUser.user_id
         );
         return presenter(instrumentationService, sessionId);
       }
