@@ -24,7 +24,38 @@ export type INotification = Pick<
 const NotificationMenu: React.FC<{
   children?: React.ReactNode;
 }> = (props) => {
-  const [notifications, setNotifications] = useState<INotification[]>([]);
+  const [notifications, setNotifications] = useState<INotification[]>([
+    {
+      message: "Your order has been shipped",
+      createdAt: new Date(),
+      read: false,
+      id: "1",
+    },
+    {
+      message: "Your order has been shipped",
+      createdAt: new Date(),
+      read: false,
+      id: "2",
+    },
+    {
+      message: "Your order has been shipped",
+      createdAt: new Date(),
+      read: false,
+      id: "3",
+    },
+    {
+      message: "Your order has been shipped",
+      createdAt: new Date(),
+      read: false,
+      id: "4",
+    },
+    {
+      message: "Your order has been shipped",
+      createdAt: new Date(),
+      read: false,
+      id: "5",
+    },
+  ]);
 
   const [hasUnread, setHasUnread] = useState(
     notifications.some((notification) => !notification.read)
@@ -37,9 +68,16 @@ const NotificationMenu: React.FC<{
   const readAllNotificationsByUserId = useCallback(async () => {
     const result = await readAllNotificationByUserIdAction();
     if (result.data) {
-      setNotifications(result.data);
+      setNotifications((prev) => [
+        ...prev,
+        ...result.data.filter((n) => !prev.map((pn) => pn.id).includes(n.id)),
+      ]);
     }
   }, []);
+
+  useEffect(() => {
+    readAllNotificationsByUserId();
+  }, [readAllNotificationsByUserId]);
 
   const updateAllNotificationIsUnread = async () => {
     const unreadNotifications = notifications.filter(
@@ -82,10 +120,6 @@ const NotificationMenu: React.FC<{
     }
   };
 
-  useEffect(() => {
-    readAllNotificationsByUserId();
-  }, [readAllNotificationsByUserId]);
-
   return (
     <MenuRoot
       onExitComplete={() => {
@@ -96,17 +130,31 @@ const NotificationMenu: React.FC<{
         <IconButton
           variant={"ghost"}
           aria-label="Notifications"
-          className={`${hasUnread ? "text-red-400" : ""}`}
-          disabled={!hasUnread}
         >
+          {hasUnread && (
+            <Status
+              value="error"
+              className="absolute right-1 top-1"
+            />
+          )}
           <FaBell />
         </IconButton>
       </MenuTrigger>
-      <MenuContent className="space-y-2 max-w-xs p-4">
+      <MenuContent className="space-y-2 w-64 p-4 max-h-64 overflow-y-auto">
+        {!notifications.length && (
+          <MenuItem
+            className="flex flex-row items-center justify-between space-x-4 rounded-lg p-2"
+            value="No new notifications"
+          >
+            <div className="flex flex-col">
+              <p>You have no notifications.</p>
+            </div>
+          </MenuItem>
+        )}
         {notifications.map((notification, index) => (
           <MenuItem
             key={index}
-            value={notification.message}
+            value={notification.id}
             className="flex flex-row items-center justify-between space-x-4 rounded-lg p-2"
           >
             <div className="flex flex-col">
